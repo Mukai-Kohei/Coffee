@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Products Script</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #product-grid { border: 2px solid #ccc; padding: 20px; min-height: 200px; }
+        .group { border: 1px solid #ddd; padding: 10px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>商品読み込みテスト</h1>
+    <p>ブラウザのコンソール（F12）を開いてログを確認してください。</p>
+
+    <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+        <!-- 商品はJavaScriptで動的に読み込まれます -->
+    </div>
+
+    <!-- 設定ファイル -->
+    <script src="./config.js"></script>
+
+    <!-- 商品情報取得スクリプト -->
+    <script src="./products.js"></script>
+</body>
+</html>
