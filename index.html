@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工藝 迎ふ | 炭火焙煎珈琲</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-black': '#2C2C2C', /* 炭色に近い黒 */
+                        'brand-gray': '#595959',
+                        'brand-light': '#F5F5F3', /* 和紙のような白 */
+                        'brand-accent': '#8C7E72', /* 陶器・珈琲豆のような茶褐色 */
+                    },
+                    fontFamily: {
+                        'serif': ['"Noto Serif JP"', 'serif'],
+                        'sans': ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    letterSpacing: {
+                        'widest': '.25em',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+        .fade-up {
+            /* GSAPで制御するため、初期状態のみ定義 */
+            opacity: 0;
+        }
+        /* ヒーロー要素の初期状態 */
+        .hero-title,
+        .hero-subtitle,
+        .lineup-header {
+            opacity: 0;
+        }
+        /* ヒーロー画像のオーバーレイ調整 */
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+        }
+    </style>
+</head>
+<body class="text-brand-black font-sans antialiased bg-white">
+
+    <header class="fixed w-full bg-white/95 backdrop-blur-sm z-50 py-5 border-b border-gray-100 transition-all">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <h1 class="font-serif text-xl tracking-widest font-medium">工藝 迎ふ</h1>
+            <nav class="hidden md:flex space-x-10 text-xs tracking-widest text-brand-gray">
+                <a href="https://mukai6666.thebase.in/about" class="hover:text-brand-black transition relative group">
+                    私たちのこと
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="https://mukai6666.thebase.in/" class="hover:text-brand-black transition relative group">
+                    商品一覧
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="https://thebase.com/inquiry/mukai6666" class="hover:text-brand-black transition relative group">
+                    お問い合わせ
+                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="relative h-[90vh] min-h-[600px] flex items-center justify-center bg-brand-light overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80" alt="Coffee Roasting" class="w-full h-full object-cover opacity-80 grayscale-[30%]">
+            <div class="hero-overlay absolute inset-0"></div>
+        </div>
+
+        <div class="relative z-10 p-12 md:p-20">
+            <div class="flex flex-col-reverse md:flex-row items-center gap-12">
+                <div class="hidden md:block h-40 w-px bg-brand-black/30"></div>
+                <p class="hero-subtitle font-serif text-xs tracking-[0.3em] uppercase text-brand-gray md:writing-mode-vertical-rl">Pottery and Charcoal Fire</p>
+
+                <h2 class="hero-title vertical-text font-serif text-3xl md:text-5xl leading-loose tracking-widest h-80 md:h-96 border-l md:border-l-0 border-brand-black/20 pl-6 md:pl-0 ml-6 md:ml-0 text-brand-black">
+                    陶器と炭火が紡ぐ、<br>特別な珈琲。
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-40 px-6 text-center max-w-2xl mx-auto fade-up">
+        <span class="block text-brand-accent text-xs tracking-widest mb-6">PHILOSOPHY</span>
+        <h3 class="font-serif text-2xl mb-12 tracking-widest">工藝としての焙煎</h3>
+        <p class="text-brand-gray leading-[2.2] text-sm md:text-base font-light">
+            栃木県栃木市にて。<br>
+            私たちは独自に開発した「陶器製焙煎機」と、<br>
+            熱源となる「おが備長炭」を用いて珈琲を焼き上げています。<br><br>
+            陶器の熱伝達と炭火の遠赤外線。<br>
+            その二つが重なることで、豆は芯からふくらみ、<br>
+            雑味のない澄んだ味わいを生み出します。<br><br>
+            量産はできません。<br>
+            けれど一つひとつに、職人の技と心を込めて。
+        </p>
+    </section>
+
+    <section class="bg-brand-light py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="lineup-header flex justify-between items-end mb-20 px-2">
+                <div>
+                    <h3 class="font-serif text-3xl mb-3">Lineup</h3>
+                    <p class="text-xs text-brand-gray tracking-widest">焙煎豆のラインナップ</p>
+                </div>
+                <a href="https://mukai6666.thebase.in/" class="hidden md:block text-xs border-b border-brand-black pb-1 hover:opacity-50 transition">すべて見る</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden mb-6 bg-white aspect-[4/5] shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000 ease-out" alt="Geisha">
+                        <div class="absolute bottom-0 left-0 bg-white/90 px-4 py-2 text-xs tracking-widest">ETHIOPIA</div>
+                    </div>
+                    <h4 class="font-serif text-lg mb-2 group-hover:text-brand-accent transition">モカ ゲイシャ G1 Natural</h4>
+                    <p class="text-xs text-brand-gray leading-relaxed line-clamp-2">ベルガモットやハチミツを思わせる独特の風味。Qグレード認証の高得点豆。</p>
+                    <p class="mt-3 text-sm font-medium">¥1,720</p>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden mb-6 bg-white aspect-[4/5] shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1611854779393-1b2ae9d5af1d?auto=format&fit=crop&q=80" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000 ease-out" alt="Trial Set">
+                        <div class="absolute bottom-0 left-0 bg-white/90 px-4 py-2 text-xs tracking-widest">SET</div>
+                    </div>
+                    <h4 class="font-serif text-lg mb-2 group-hover:text-brand-accent transition">トライアルセット</h4>
+                    <p class="text-xs text-brand-gray leading-relaxed line-clamp-2">タンザニア、エチオピア、グアテマラなど産地別飲み比べセット。</p>
+                    <p class="mt-3 text-sm font-medium">¥1,500</p>
+                </div>
+
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden mb-6 bg-white aspect-[4/5] shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1552346990-354cd1d3596d?auto=format&fit=crop&q=80" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000 ease-out" alt="Peru">
+                        <div class="absolute bottom-0 left-0 bg-white/90 px-4 py-2 text-xs tracking-widest">PERU</div>
+                    </div>
+                    <h4 class="font-serif text-lg mb-2 group-hover:text-brand-accent transition">ペルー マチュピチュ Qグレード</h4>
+                    <p class="text-xs text-brand-gray leading-relaxed line-clamp-2">マチュピチュ遺跡周辺の豆。柔らかな甘みとナッツのような香ばしさ。</p>
+                    <p class="mt-3 text-sm font-medium">¥1,580</p>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center md:hidden">
+                <a href="https://mukai6666.thebase.in/" class="text-xs border-b border-brand-black pb-1">すべての商品を見る</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-40 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="w-full md:w-1/2 h-[500px] bg-gray-200 fade-up">
+                <img src="https://images.unsplash.com/photo-1517260739337-6799d2ff9ee3?auto=format&fit=crop&q=80" alt="Roasting Process" class="w-full h-full object-cover grayscale-[20%]">
+            </div>
+            <div class="w-full md:w-1/2 fade-up">
+                <span class="text-xs tracking-widest text-brand-gray block mb-4">CRAFTSMANSHIP</span>
+                <h3 class="font-serif text-3xl mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
+                <p class="text-brand-gray leading-loose mb-8 text-sm">
+                    当店の焙煎は、一般的なガス火や電気式とは異なります。<br>
+                    陶器製の焙煎機による熱伝達効果と、<br>
+                    おが備長炭による炭火の遠赤外線効果。<br><br>
+                    この二つを最大限に利用し、職人が豆の様子を見極めながら<br>
+                    じっくりと時間をかけて焙煎しています。<br>
+                    量産はできませんが、一つひとつに心を込めて。
+                </p>
+                <a href="https://mukai6666.thebase.in/about" class="inline-block px-8 py-3 border border-brand-black text-xs tracking-widest hover:bg-brand-black hover:text-white transition">詳しく見る</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-24 px-6 border-t border-gray-100 text-brand-black">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+            <div>
+                <h5 class="font-serif text-xl mb-6 tracking-widest">工藝 迎ふ</h5>
+                <p class="text-xs text-brand-gray leading-loose">
+                    炭火焙煎珈琲<br>
+                    栃木県栃木市<br><br>
+                    ご注文はご予約にて承ります。
+                </p>
+            </div>
+            <div class="flex gap-16 text-xs tracking-widest">
+                <ul class="space-y-4">
+                    <li><a href="https://mukai6666.thebase.in/" class="hover:opacity-50 transition">HOME</a></li>
+                    <li><a href="https://mukai6666.thebase.in/about" class="hover:opacity-50 transition">ABOUT</a></li>
+                    <li><a href="https://thebase.com/inquiry/mukai6666" class="hover:opacity-50 transition">CONTACT</a></li>
+                </ul>
+                <ul class="space-y-4 text-brand-gray">
+                    <li><a href="https://mukai6666.thebase.in/privacy" class="hover:text-brand-black transition">プライバシーポリシー</a></li>
+                    <li><a href="https://mukai6666.thebase.in/law" class="hover:text-brand-black transition">特定商取引法に基づく表記</a></li>
+                    <li><a href="https://www.instagram.com/kogei_mukau/" class="hover:text-brand-black transition">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center text-[10px] text-gray-400 mt-24 tracking-widest">
+            &copy; 工藝 迎ふ (炭火焙煎珈琲)
+        </div>
+    </footer>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        // GSAPとScrollTriggerを登録
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ページ読み込み時に実行
+        document.addEventListener('DOMContentLoaded', () => {
+            // ========================================
+            // 1. ヒーローセクションのアニメーション（ページ読み込み時）
+            // ========================================
+            const heroTitle = document.querySelector('.hero-title');
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+
+            // タイトルを少し遅れて表示
+            gsap.to(heroTitle, {
+                opacity: 1,
+                y: 0,
+                duration: 1.6,
+                ease: "power2.out",
+                delay: 0.3
+            });
+
+            // サブタイトルを先に表示
+            gsap.to(heroSubtitle, {
+                opacity: 1,
+                x: 0,
+                duration: 1.4,
+                ease: "power2.out",
+                delay: 0.1
+            });
+
+            // ========================================
+            // 2. .fade-up要素のアニメーション（スクロール時）
+            // ========================================
+            const fadeUpElements = gsap.utils.toArray('.fade-up');
+
+            fadeUpElements.forEach((element, index) => {
+                gsap.fromTo(element,
+                    {
+                        opacity: 0,
+                        y: 40,
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1.4,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 85%",
+                            end: "top 20%",
+                            toggleActions: "play none none none",
+                            // markers: true, // デバッグ用（本番では削除）
+                        }
+                    }
+                );
+            });
+
+            // ========================================
+            // 3. Lineupヘッダーのアニメーション（スクロール時）
+            // ========================================
+            const lineupHeader = document.querySelector('.lineup-header');
+            if (lineupHeader) {
+                gsap.fromTo(lineupHeader,
+                    {
+                        opacity: 0,
+                        y: 30,
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1.3,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: lineupHeader,
+                            start: "top 85%",
+                            toggleActions: "play none none none",
+                        }
+                    }
+                );
+            }
+
+            // ========================================
+            // 4. 商品カードのアニメーション（stagger付き）
+            // ========================================
+            const productCards = document.querySelectorAll('.grid.grid-cols-1 .group');
+            if (productCards.length > 0) {
+                gsap.fromTo(productCards,
+                    {
+                        opacity: 0,
+                        y: 40,
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1.3,
+                        ease: "expo.out",
+                        stagger: 0.2, // 順次0.2秒遅延
+                        scrollTrigger: {
+                            trigger: productCards[0].parentElement,
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                        }
+                    }
+                );
+            }
+        });
+    </script>
+</body>
+</html>
