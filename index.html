@@ -6,7 +6,7 @@
     <title>工藝 迎ふ | 炭火焙煎珈琲</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,23 +30,229 @@
         }
     </script>
     <style>
+        /* CSS変数 */
+        :root {
+            --bg-color: #1a1614; /* 鉄黒 */
+            --text-color: #f2f0eb; /* 生成り */
+            --accent-color: #d2691e; /* 琥珀色 */
+            --overlay: linear-gradient(to bottom, rgba(26,22,20,0.3), rgba(26,22,20,0.7));
+        }
+
         .vertical-text {
             writing-mode: vertical-rl;
             text-orientation: upright;
         }
+
         .fade-up {
-            /* GSAPで制御するため、初期状態のみ定義 */
             opacity: 0;
         }
-        /* ヒーロー要素の初期状態 */
-        .hero-title,
-        .hero-subtitle,
+
         .lineup-header {
             opacity: 0;
         }
-        /* ヒーロー画像のオーバーレイ調整 */
-        .hero-overlay {
-            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 100%);
+
+        /* ========================================
+           Section A: ヒーローセクション
+        ======================================== */
+
+        /* オープニングマスク（clip-path） */
+        .opening-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 200;
+            clip-path: inset(0% 48% 0% 48%); /* 初期：中央スリット */
+        }
+
+        /* ヒーローセクション全体 */
+        #hero-section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 背景動画コンテナ */
+        .hero-bg-video {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* 背景の初期オーバーレイ（グラデーション） */
+        .hero-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--overlay);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 背景暗転用オーバーレイ（スクロール時） */
+        .hero-dark-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* 右上タイトル「陶器、」 */
+        .hero-title-top {
+            position: absolute;
+            top: 15%;
+            right: 8%;
+            z-index: 10;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-family: 'Shippori Mincho', serif;
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: var(--accent-color);
+            mix-blend-mode: difference;
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        /* 左下タイトル「焙煎」 */
+        .hero-title-bottom {
+            position: absolute;
+            bottom: 15%;
+            left: 8%;
+            z-index: 10;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-family: 'Shippori Mincho', serif;
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: #ffffff;
+            mix-blend-mode: difference;
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        /* 中央サブコピー */
+        .hero-subcopy {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        .hero-subcopy-box {
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 4rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .hero-subcopy-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: #ffffff;
+            line-height: 2.8;
+            mix-blend-mode: difference;
+        }
+
+        /* ========================================
+           Section B: コンセプトメッセージ
+        ======================================== */
+
+        #concept-section {
+            position: relative;
+            height: 100vh;
+            z-index: 50;
+            pointer-events: none; /* スクロール前は透明で無効 */
+        }
+
+        .concept-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden; /* 完全に非表示 */
+            z-index: 50;
+        }
+
+        .concept-content {
+            text-align: center;
+            color: var(--text-color);
+            max-width: 900px;
+            padding: 0 3rem;
+        }
+
+        .concept-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            margin-bottom: 4rem;
+            color: var(--accent-color);
+        }
+
+        .concept-text {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 2.8;
+            letter-spacing: 0.12em;
+            color: var(--text-color);
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .hero-title-top,
+            .hero-title-bottom {
+                font-size: 3.5rem;
+                letter-spacing: 0.1em;
+            }
+
+            .hero-title-top {
+                top: 12%;
+                right: 5%;
+            }
+
+            .hero-title-bottom {
+                bottom: 12%;
+                left: 5%;
+            }
+
+            .hero-subcopy-box {
+                padding: 2rem 2.5rem;
+            }
+
+            .hero-subcopy-text {
+                font-size: 0.95rem;
+                line-height: 2.5;
+            }
+
+            .concept-title {
+                font-size: 2.2rem;
+                margin-bottom: 3rem;
+            }
+
+            .concept-text {
+                font-size: 1rem;
+                line-height: 2.5;
+            }
         }
     </style>
 </head>
@@ -72,20 +278,55 @@
         </div>
     </header>
 
-    <section class="relative h-[90vh] min-h-[600px] flex items-center justify-center bg-brand-light overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80" alt="Coffee Roasting" class="w-full h-full object-cover opacity-80 grayscale-[30%]">
-            <div class="hero-overlay absolute inset-0"></div>
+    <!-- オープニングマスク -->
+    <div class="opening-mask"></div>
+
+    <!-- Section A: ヒーローセクション -->
+    <section id="hero-section">
+        <!-- 背景動画 -->
+        <div class="hero-bg-video">
+            <iframe
+                class="absolute top-1/2 left-1/2 w-[110vw] h-[61.88vw] min-h-[110vh] min-w-[195.55vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                src="https://www.youtube.com/embed/EsEM4zzvE2k?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1"
+                title="Coffee Roasting Video Background"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+            ></iframe>
         </div>
 
-        <div class="relative z-10 p-12 md:p-20">
-            <div class="flex flex-col-reverse md:flex-row items-center gap-12">
-                <div class="hidden md:block h-40 w-px bg-brand-black/30"></div>
-                <p class="hero-subtitle font-serif text-xs tracking-[0.3em] uppercase text-brand-gray md:writing-mode-vertical-rl">Pottery and Charcoal Fire</p>
+        <!-- 背景の初期オーバーレイ（グラデーション） -->
+        <div class="hero-bg-overlay"></div>
 
-                <h2 class="hero-title vertical-text font-serif text-3xl md:text-5xl leading-loose tracking-widest h-80 md:h-96 border-l md:border-l-0 border-brand-black/20 pl-6 md:pl-0 ml-6 md:ml-0 text-brand-black">
-                    陶器と炭火が紡ぐ、<br>特別な珈琲。
-                </h2>
+        <!-- 暗転用オーバーレイ（スクロール時） -->
+        <div class="hero-dark-overlay"></div>
+
+        <!-- 右上タイトル「陶器、」 -->
+        <h1 class="hero-title-top">陶器、</h1>
+
+        <!-- 左下タイトル「焙煎」 -->
+        <h1 class="hero-title-bottom">焙煎</h1>
+
+        <!-- 中央サブコピー -->
+        <div class="hero-subcopy">
+            <div class="hero-subcopy-box">
+                <p class="hero-subcopy-text">栃木県栃木市にて、陶器と炭火が紡ぐ珈琲。</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Section B: コンセプトメッセージ -->
+    <section id="concept-section">
+        <div class="concept-overlay">
+            <div class="concept-content">
+                <h2 class="concept-title">珈琲の、その先へ。</h2>
+                <p class="concept-text">
+                    私たちは珈琲を、単なる飲料ではなく、<br>
+                    「工藝」として捉えています。<br><br>
+                    陶器と炭火が生み出す、唯一無二の味わい。<br>
+                    それは、時間をかけて丁寧に向き合うことでしか<br>
+                    辿り着けない境地です。
+                </p>
             </div>
         </div>
     </section>
@@ -191,31 +432,114 @@
         // ページ読み込み時に実行
         document.addEventListener('DOMContentLoaded', () => {
             // ========================================
-            // 1. ヒーローセクションのアニメーション（ページ読み込み時）
+            // Phase 1: オープニングアニメーション
             // ========================================
-            const heroTitle = document.querySelector('.hero-title');
-            const heroSubtitle = document.querySelector('.hero-subtitle');
+            const openingMask = document.querySelector('.opening-mask');
+            const heroSection = document.querySelector('#hero-section');
+            const heroTitleTop = document.querySelector('.hero-title-top');
+            const heroTitleBottom = document.querySelector('.hero-title-bottom');
+            const heroSubcopy = document.querySelector('.hero-subcopy');
 
-            // タイトルを少し遅れて表示
-            gsap.to(heroTitle, {
-                opacity: 1,
-                y: 0,
-                duration: 1.6,
-                ease: "power2.out",
-                delay: 0.3
+            // オープニングタイムライン
+            const openingTL = gsap.timeline();
+
+            // マスクを中央から外側へ開く
+            openingTL.to(openingMask, {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 3.0,
+                ease: 'power3.out'
+            }, 0);
+
+            // マスクを非表示にする
+            openingTL.to(openingMask, {
+                display: 'none',
+                duration: 0
+            }, 3.0);
+
+            // タイトル「陶器、」をフェードイン
+            openingTL.fromTo(heroTitleTop,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 2.0, ease: 'power3.out' },
+                1.5
+            );
+
+            // タイトル「焙煎」をフェードイン
+            openingTL.fromTo(heroTitleBottom,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 2.0, ease: 'power3.out' },
+                1.5
+            );
+
+            // サブコピーをフェードイン
+            openingTL.fromTo(heroSubcopy,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power3.out' },
+                2.0
+            );
+
+            // ========================================
+            // Phase 2: スクロール連動アニメーション
+            // ========================================
+            const heroDarkOverlay = document.querySelector('.hero-dark-overlay');
+            const conceptOverlay = document.querySelector('.concept-overlay');
+            const conceptSection = document.querySelector('#concept-section');
+
+            // ScrollTrigger Pinningで画面固定
+            const scrollTL = gsap.timeline({
+                scrollTrigger: {
+                    trigger: conceptSection,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    pin: heroSection,
+                    pinSpacing: false,
+                    scrub: 1,
+                    // markers: true // デバッグ用
+                }
             });
 
-            // サブタイトルを先に表示
-            gsap.to(heroSubtitle, {
+            // 背景を暗転
+            scrollTL.to(heroDarkOverlay, {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                duration: 1
+            }, 0);
+
+            // Section Aのタイトルをフェードアウト
+            scrollTL.to([heroTitleTop, heroTitleBottom], {
+                opacity: 0,
+                filter: 'blur(20px)',
+                duration: 1
+            }, 0);
+
+            // Section Aのサブコピーをフェードアウト
+            scrollTL.to(heroSubcopy, {
+                opacity: 0,
+                filter: 'blur(20px)',
+                duration: 1
+            }, 0);
+
+            // Section Bをフェードイン（スライドアップ）
+            scrollTL.fromTo(conceptOverlay,
+                { opacity: 0, y: 50, visibility: 'hidden' },
+                { opacity: 1, y: 0, visibility: 'visible', duration: 1.5 },
+                0.5
+            );
+
+            // Section Bを保持
+            scrollTL.to(conceptOverlay, {
                 opacity: 1,
-                x: 0,
-                duration: 1.4,
-                ease: "power2.out",
-                delay: 0.1
+                duration: 1
+            });
+
+            // Section Bをフェードアウト
+            scrollTL.to(conceptOverlay, {
+                opacity: 0,
+                y: -50,
+                visibility: 'hidden',
+                duration: 1
             });
 
             // ========================================
-            // 2. .fade-up要素のアニメーション（スクロール時）
+            // Phase 3: その他の要素のアニメーション
             // ========================================
             const fadeUpElements = gsap.utils.toArray('.fade-up');
 
@@ -241,9 +565,7 @@
                 );
             });
 
-            // ========================================
-            // 3. Lineupヘッダーのアニメーション（スクロール時）
-            // ========================================
+            // Lineupヘッダーのアニメーション
             const lineupHeader = document.querySelector('.lineup-header');
             if (lineupHeader) {
                 gsap.fromTo(lineupHeader,
@@ -265,9 +587,7 @@
                 );
             }
 
-            // ========================================
-            // 4. 商品カードのアニメーション（stagger付き）
-            // ========================================
+            // 商品カードのアニメーション（stagger付き）
             const productCards = document.querySelectorAll('.grid.grid-cols-1 .group');
             if (productCards.length > 0) {
                 gsap.fromTo(productCards,
