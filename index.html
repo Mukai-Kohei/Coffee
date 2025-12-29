@@ -38,6 +38,12 @@
             --overlay: linear-gradient(to bottom, rgba(26,22,20,0.3), rgba(26,22,20,0.7));
         }
 
+        /* アニメーション中のスクロール禁止 */
+        body.no-scroll {
+            overflow: hidden;
+            height: 100vh;
+        }
+
         .vertical-text {
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -52,6 +58,98 @@
         }
 
         /* ========================================
+           Preloader（ローディング画面）
+        ======================================== */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .preloader-svg {
+            width: 180px;
+            height: auto;
+        }
+
+        .preloader-text {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 96px;
+            font-weight: 700;
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            text-anchor: middle;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawStroke 2.5s ease-in-out forwards;
+        }
+
+        /* 各文字のアニメーション遅延 */
+        .preloader-text.char-1 {
+            animation-delay: 0s;
+        }
+
+        .preloader-text.char-2 {
+            animation-delay: 0.3s;
+        }
+
+        .preloader-text.char-3 {
+            animation-delay: 0.6s;
+        }
+
+        .preloader-text.char-4 {
+            animation-delay: 0.9s;
+        }
+
+        .preloader-text.char-5 {
+            animation-delay: 1.2s;
+        }
+
+        /* ストローク描画アニメーション */
+        @keyframes drawStroke {
+            0% {
+                stroke-dashoffset: 1000;
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .preloader-svg {
+                width: 120px;
+            }
+
+            .preloader-text {
+                font-size: 64px;
+                stroke-width: 1.2;
+            }
+        }
+
+        /* ========================================
            Section A: ヒーローセクション
         ======================================== */
 
@@ -63,8 +161,10 @@
             width: 100%;
             height: 100vh;
             background-color: var(--bg-color);
-            z-index: 200;
+            z-index: 9998; /* プリローダーより下 */
             clip-path: inset(0% 48% 0% 48%); /* 初期：中央スリット */
+            opacity: 0; /* 初期は非表示 */
+            visibility: hidden;
         }
 
         /* ヒーローセクション全体 */
@@ -258,6 +358,22 @@
 </head>
 <body class="text-brand-black font-sans antialiased bg-white">
 
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <svg class="preloader-svg" viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
+            <!-- 陶 -->
+            <text x="200" y="150" class="preloader-text char-1">陶</text>
+            <!-- 器 -->
+            <text x="200" y="250" class="preloader-text char-2">器</text>
+            <!-- 、 -->
+            <text x="200" y="330" class="preloader-text char-3">、</text>
+            <!-- 焙 -->
+            <text x="200" y="450" class="preloader-text char-4">焙</text>
+            <!-- 煎 -->
+            <text x="200" y="550" class="preloader-text char-5">煎</text>
+        </svg>
+    </div>
+
     <header class="fixed w-full bg-white/95 backdrop-blur-sm z-50 py-5 border-b border-gray-100 transition-all">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <h1 class="font-serif text-xl tracking-widest font-medium">工藝 迎ふ</h1>
@@ -331,7 +447,7 @@
         </div>
     </section>
 
-    <section class="py-40 px-6 text-center max-w-2xl mx-auto fade-up">
+    <section class="py-40 px-6 text-center max-w-2xl mx-auto fade-up mb-32">
         <span class="block text-brand-accent text-xs tracking-widest mb-6">PHILOSOPHY</span>
         <h3 class="font-serif text-2xl mb-12 tracking-widest">工藝としての焙煎</h3>
         <p class="text-brand-gray leading-[2.2] text-sm md:text-base font-light">
@@ -346,7 +462,7 @@
         </p>
     </section>
 
-    <section class="bg-brand-light py-32 px-6">
+    <section class="bg-brand-light py-32 px-6 mt-16">
         <div class="max-w-7xl mx-auto">
             <div class="lineup-header flex justify-between items-end mb-20 px-2">
                 <div>
@@ -430,56 +546,87 @@
         gsap.registerPlugin(ScrollTrigger);
 
         // ページ読み込み時に実行
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('load', () => {
+            // アニメーション中はスクロールを禁止
+            document.body.classList.add('no-scroll');
+
             // ========================================
-            // Phase 1: オープニングアニメーション
+            // Phase 0: プリローダー → マスク → ヒーローのシームレスな流れ
             // ========================================
+            const preloader = document.getElementById('preloader');
             const openingMask = document.querySelector('.opening-mask');
-            const heroSection = document.querySelector('#hero-section');
             const heroTitleTop = document.querySelector('.hero-title-top');
             const heroTitleBottom = document.querySelector('.hero-title-bottom');
             const heroSubcopy = document.querySelector('.hero-subcopy');
 
-            // オープニングタイムライン
-            const openingTL = gsap.timeline();
+            // 全体のマスタータイムライン
+            const masterTL = gsap.timeline({
+                onComplete: () => {
+                    // すべてのアニメーション完了後、スクロールを許可
+                    document.body.classList.remove('no-scroll');
+                }
+            });
 
-            // マスクを中央から外側へ開く
-            openingTL.to(openingMask, {
+            // 1. プリローダーをフェードアウト（2.5秒後に開始、1.0秒かけて）
+            masterTL.to(preloader, {
+                opacity: 0,
+                duration: 1.0,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    preloader.style.display = 'none';
+                }
+            }, 2.5);
+
+            // 2. プリローダーのフェードアウトと同時に、マスクを表示＆開くアニメーション
+            masterTL.set(openingMask, {
+                opacity: 1,
+                visibility: 'visible'
+            }, 2.5);
+
+            masterTL.to(openingMask, {
                 clipPath: 'inset(0% 0% 0% 0%)',
-                duration: 3.0,
+                duration: 2.5,
                 ease: 'power3.out'
-            }, 0);
+            }, 2.5);
 
-            // マスクを非表示にする
-            openingTL.to(openingMask, {
-                display: 'none',
-                duration: 0
-            }, 3.0);
+            // 3. マスクを非表示にする
+            masterTL.to(openingMask, {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    openingMask.style.display = 'none';
+                }
+            }, 5.0);
 
-            // タイトル「陶器、」をフェードイン
-            openingTL.fromTo(heroTitleTop,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 2.0, ease: 'power3.out' },
-                1.5
-            );
-
-            // タイトル「焙煎」をフェードイン
-            openingTL.fromTo(heroTitleBottom,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 2.0, ease: 'power3.out' },
-                1.5
-            );
-
-            // サブコピーをフェードイン
-            openingTL.fromTo(heroSubcopy,
+            // 4. ヒーローセクションの要素をフェードイン（マスクが開く途中から開始）
+            masterTL.fromTo(heroTitleTop,
                 { opacity: 0, filter: 'blur(10px)' },
                 { opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power3.out' },
-                2.0
+                3.5
             );
 
+            masterTL.fromTo(heroTitleBottom,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power3.out' },
+                3.5
+            );
+
+            masterTL.fromTo(heroSubcopy,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power3.out' },
+                4.0
+            );
+        });
+
+        // DOMContentLoadedでScrollTriggerなどを設定
+        document.addEventListener('DOMContentLoaded', () => {
             // ========================================
             // Phase 2: スクロール連動アニメーション
             // ========================================
+            const heroSection = document.querySelector('#hero-section');
+            const heroTitleTop = document.querySelector('.hero-title-top');
+            const heroTitleBottom = document.querySelector('.hero-title-bottom');
+            const heroSubcopy = document.querySelector('.hero-subcopy');
             const heroDarkOverlay = document.querySelector('.hero-dark-overlay');
             const conceptOverlay = document.querySelector('.concept-overlay');
             const conceptSection = document.querySelector('#concept-section');
