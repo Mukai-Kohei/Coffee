@@ -209,7 +209,7 @@
             writing-mode: vertical-rl;
             text-orientation: upright;
             font-family: 'Shippori Mincho', serif;
-            font-size: 6rem;
+            font-size: 8rem;
             font-weight: 800;
             letter-spacing: 0.15em;
             color: var(--accent-color);
@@ -227,7 +227,7 @@
             writing-mode: vertical-rl;
             text-orientation: upright;
             font-family: 'Shippori Mincho', serif;
-            font-size: 6rem;
+            font-size: 8rem;
             font-weight: 800;
             letter-spacing: 0.15em;
             color: #ffffff;
@@ -321,7 +321,7 @@
         @media (max-width: 768px) {
             .hero-title-top,
             .hero-title-bottom {
-                font-size: 3.5rem;
+                font-size: 4.5rem;
                 letter-spacing: 0.1em;
             }
 
@@ -447,22 +447,7 @@
         </div>
     </section>
 
-    <section class="py-40 px-6 text-center max-w-2xl mx-auto fade-up mb-32">
-        <span class="block text-brand-accent text-xs tracking-widest mb-6">PHILOSOPHY</span>
-        <h3 class="font-serif text-2xl mb-12 tracking-widest">工藝としての焙煎</h3>
-        <p class="text-brand-gray leading-[2.2] text-sm md:text-base font-light">
-            栃木県栃木市にて。<br>
-            私たちは独自に開発した「陶器製焙煎機」と、<br>
-            熱源となる「おが備長炭」を用いて珈琲を焼き上げています。<br><br>
-            陶器の熱伝達と炭火の遠赤外線。<br>
-            その二つが重なることで、豆は芯からふくらみ、<br>
-            雑味のない澄んだ味わいを生み出します。<br><br>
-            量産はできません。<br>
-            けれど一つひとつに、職人の技と心を込めて。
-        </p>
-    </section>
-
-    <section class="bg-brand-light py-32 px-6 mt-16">
+    <section class="bg-brand-light py-32 px-6">
         <div class="max-w-7xl mx-auto">
             <div class="lineup-header flex justify-between items-end mb-20 px-2">
                 <div>
@@ -644,43 +629,44 @@
                 }
             });
 
-            // 背景を暗転
-            scrollTL.to(heroDarkOverlay, {
-                backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                duration: 1
-            }, 0);
-
-            // Section Aのタイトルをフェードアウト
-            scrollTL.to([heroTitleTop, heroTitleBottom], {
-                opacity: 0,
-                filter: 'blur(20px)',
-                duration: 1
-            }, 0);
-
-            // Section Aのサブコピーをフェードアウト
+            // === Step 1: サブコピーが上に移動しながらフェードアウト ===
             scrollTL.to(heroSubcopy, {
                 opacity: 0,
-                filter: 'blur(20px)',
+                y: -80, // 上に移動
+                filter: 'blur(15px)',
                 duration: 1
             }, 0);
 
-            // Section Bをフェードイン（スライドアップ）
+            // 背景を暗転（サブコピーと同時に開始）
+            scrollTL.to(heroDarkOverlay, {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                duration: 1.5
+            }, 0);
+
+            // === Step 2: メインタイトル「陶器、焙煎」が退場 ===
+            scrollTL.to([heroTitleTop, heroTitleBottom], {
+                opacity: 0,
+                filter: 'blur(15px)',
+                duration: 1.2
+            }, 0.8); // サブコピーが消える少し前から開始
+
+            // === Step 3: コンセプトメッセージ「珈琲の、その先へ。」が出現 ===
             scrollTL.fromTo(conceptOverlay,
-                { opacity: 0, y: 50, visibility: 'hidden' },
+                { opacity: 0, y: 40, visibility: 'hidden' },
                 { opacity: 1, y: 0, visibility: 'visible', duration: 1.5 },
-                0.5
+                1.8 // メインタイトルが消える途中から開始
             );
 
             // Section Bを保持
             scrollTL.to(conceptOverlay, {
                 opacity: 1,
-                duration: 1
+                duration: 1.2
             });
 
             // Section Bをフェードアウト
             scrollTL.to(conceptOverlay, {
                 opacity: 0,
-                y: -50,
+                y: -40,
                 visibility: 'hidden',
                 duration: 1
             });
