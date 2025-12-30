@@ -1,15 +1,20 @@
 // BASEのRSSフィードから商品情報を取得してリスト表示
+// デバッグモード: trueにするとアニメーションを無効化
+const DEBUG_MODE = true;
+
+console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
+
 (function() {
     'use strict';
 
-    console.log('🚀 Products script started');
-
+    // ========================================
     // 設定
+    // ========================================
     const RSS_FEED_URL = 'https://thebase.com/note_store/note_store_apps_rss/feed/f00f9466d7f368ed02969b9aacfcf435d7f36bab';
     const MAX_PRODUCTS = 3;
     const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80';
 
-    // フォールバック用の商品データ（RSSが取得できない場合に使用）
+    // フォールバック用の商品データ
     const FALLBACK_PRODUCTS = [
         {
             title: '【エチオピア】モカ ゲイシャ G1 Natural 150g',
@@ -34,149 +39,109 @@
         }
     ];
 
+    // ========================================
+    // ログ関数
+    // ========================================
+    function log(step, message, data = null) {
+        const prefix = `[Products][${step}]`;
+        if (data !== null) {
+            console.log(prefix, message, data);
+        } else {
+            console.log(prefix, message);
+        }
+    }
+
+    // ========================================
+    // DOM操作
+    // ========================================
     let productList = null;
+    let isInitialized = false;
 
-    function init() {
+    function findContainer() {
+        log('INIT', 'Looking for #product-list...');
         productList = document.getElementById('product-list');
-
-        if (!productList) {
-            console.warn('⚠️ Product list container not found, retrying...');
-            setTimeout(init, 500);
-            return;
-        }
-
-        console.log('✅ Product list container found');
-        fetchProducts();
-    }
-
-    function showError(message) {
-        console.error('❌ Showing error:', message);
+        
         if (productList) {
-            productList.innerHTML = `
-                <div class="text-center py-12">
-                    <p class="text-sm text-brand-gray mb-4">${message}</p>
-                    <a href="https://mukai6666.thebase.in/" class="inline-block text-xs border-b border-brand-black pb-1 hover:opacity-50 transition">
-                        商品ページへ移動 →
-                    </a>
-                </div>
-            `;
+            log('INIT', '✅ Found #product-list');
+            return true;
         }
-    }
-
-    function showLoading() {
-        if (productList) {
-            productList.innerHTML = `
-                <div class="text-center py-12">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent mb-4"></div>
-                    <p class="text-sm text-brand-gray">商品を読み込み中...</p>
-                </div>
-            `;
-        }
+        
+        log('INIT', '❌ #product-list NOT FOUND');
+        return false;
     }
 
     function extractCategory(title) {
-        if (!title || typeof title !== 'string') return 'COFFEE';
-        
-        if (title.includes('エチオピア') || title.includes('モカ')) {
-            return 'ETHIOPIA';
-        } else if (title.includes('ペルー')) {
-            return 'PERU';
-        } else if (title.includes('タンザニア')) {
-            return 'TANZANIA';
-        } else if (title.includes('グアテマラ') || title.includes('グァテマラ')) {
-            return 'GUATEMALA';
-        } else if (title.includes('セット') || title.includes('トライアル') || title.includes('お試し')) {
-            return 'SET';
-        }
+        if (!title) return 'COFFEE';
+        if (title.includes('エチオピア') || title.includes('モカ')) return 'ETHIOPIA';
+        if (title.includes('ペルー')) return 'PERU';
+        if (title.includes('タンザニア')) return 'TANZANIA';
+        if (title.includes('グアテマラ') || title.includes('グァテマラ')) return 'GUATEMALA';
+        if (title.includes('セット') || title.includes('お試し')) return 'SET';
         return 'COFFEE';
     }
 
-    function createProductItem(item) {
-        try {
-            const imageUrl = item.thumbnail || DEFAULT_IMAGE;
-            let title = item.title || '商品名未設定';
-            const link = item.link || 'https://mukai6666.thebase.in/';
-            const category = item.category || extractCategory(title);
-            const price = item.price || '';
+    function createProductHTML(item) {
+        const imageUrl = item.thumbnail || DEFAULT_IMAGE;
+        const title = (item.title || '商品名未設定').replace(/¥[\d,]+/g, '').trim();
+        const link = item.link || 'https://mukai6666.thebase.in/';
+        const category = item.category || extractCategory(title);
+        const price = item.price || '';
 
-            // タイトルから価格部分を除去
-            title = title.replace(/¥[\d,]+/g, '').trim();
-
-            return `
-                <a href="${link}" target="_blank" rel="noopener noreferrer" class="product-item">
-                    <div class="product-image">
-                        <img src="${imageUrl}" alt="${title}" onerror="this.src='${DEFAULT_IMAGE}'">
-                    </div>
-                    <div class="product-info">
-                        <span class="product-category">${category}</span>
-                        <h4 class="product-title">${title}</h4>
-                        ${price ? `<span class="product-price">${price}</span>` : ''}
-                    </div>
-                    <div class="product-arrow">↗</div>
-                </a>
-            `;
-        } catch (error) {
-            console.error('❌ Error creating product item:', error);
-            return '';
-        }
+        return `
+            <a href="${link}" target="_blank" rel="noopener noreferrer" class="product-item">
+                <div class="product-image">
+                    <img src="${imageUrl}" alt="${title}" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}';">
+                </div>
+                <div class="product-info">
+                    <span class="product-category">${category}</span>
+                    <h4 class="product-title">${title}</h4>
+                    ${price ? `<span class="product-price">${price}</span>` : ''}
+                </div>
+                <div class="product-arrow">↗</div>
+            </a>
+        `;
     }
 
-    function displayProducts(items) {
-        console.log('🎨 Displaying products...', items);
+    function displayProducts(products) {
+        log('RENDER', 'displayProducts called with', products.length + ' items');
 
-        if (!items || items.length === 0) {
-            showError('現在表示できる商品がありません。');
+        if (!productList) {
+            log('RENDER', '❌ productList is null, trying to find again...');
+            if (!findContainer()) {
+                log('RENDER', '❌ Still cannot find container');
+                return;
+            }
+        }
+
+        if (!products || products.length === 0) {
+            log('RENDER', '❌ No products');
+            productList.innerHTML = '<div class="text-center py-12"><p class="text-sm text-brand-gray">商品が見つかりませんでした。</p></div>';
             return;
         }
 
-        try {
-            const productsHTML = items
-                .slice(0, MAX_PRODUCTS)
-                .map(item => createProductItem(item))
-                .filter(html => html.length > 0)
-                .join('');
+        log('RENDER', 'Generating HTML...');
+        const html = products.slice(0, MAX_PRODUCTS).map(createProductHTML).join('');
+        
+        log('RENDER', 'Inserting HTML, length:', html.length);
+        productList.innerHTML = html;
+        
+        log('RENDER', '✅ Done! Children count:', productList.children.length);
 
-            if (productsHTML.length === 0) {
-                showError('商品の表示に失敗しました。');
-                return;
-            }
-
-            productList.innerHTML = productsHTML;
-            console.log('✅ Products displayed successfully');
-
-            applyAnimations();
-
-        } catch (error) {
-            console.error('❌ Error displaying products:', error);
-            showError('商品の表示中にエラーが発生しました。');
+        // ScrollTrigger.refresh
+        if (typeof ScrollTrigger !== 'undefined') {
+            setTimeout(function() {
+                ScrollTrigger.refresh();
+                log('RENDER', 'ScrollTrigger.refresh() called');
+            }, 200);
         }
     }
 
-    function applyAnimations() {
-        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-            const productItems = productList.querySelectorAll('.product-item');
-            if (productItems.length > 0) {
-                gsap.fromTo(productItems,
-                    { opacity: 0, y: 30 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 1.0,
-                        ease: "power2.out",
-                        stagger: 0.15,
-                        scrollTrigger: {
-                            trigger: productList,
-                            start: "top 80%",
-                            toggleActions: "play none none none",
-                        }
-                    }
-                );
-            }
-        }
-    }
-
-    // XMLをパース
+    // ========================================
+    // RSS取得
+    // ========================================
     function parseRSSXML(xmlText) {
+        log('PARSE', 'Parsing XML, length:', xmlText.length);
+        
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
         
@@ -185,87 +150,119 @@
         }
 
         const items = xmlDoc.querySelectorAll('item');
-        const products = [];
+        log('PARSE', 'Found items:', items.length);
 
-        items.forEach((item, index) => {
+        const products = [];
+        items.forEach(function(item, index) {
             if (index >= MAX_PRODUCTS) return;
 
-            const title = item.querySelector('title')?.textContent || '商品名未設定';
-            const link = item.querySelector('link')?.textContent || 'https://mukai6666.thebase.in/';
+            const title = item.querySelector('title') ? item.querySelector('title').textContent : '';
+            const link = item.querySelector('link') ? item.querySelector('link').textContent : '';
             
-            // media:thumbnail の url 属性を取得
             let thumbnail = DEFAULT_IMAGE;
             const mediaThumbnail = item.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'thumbnail')[0];
-            if (mediaThumbnail) {
-                thumbnail = mediaThumbnail.getAttribute('url') || DEFAULT_IMAGE;
+            if (mediaThumbnail && mediaThumbnail.getAttribute('url')) {
+                thumbnail = mediaThumbnail.getAttribute('url');
             }
 
-            // note:price を取得
             let price = '';
             const notePrice = item.getElementsByTagNameNS('https://note.com', 'price')[0];
-            if (notePrice) {
-                price = notePrice.textContent || '';
+            if (notePrice && notePrice.textContent) {
+                price = notePrice.textContent;
             }
 
-            products.push({
-                title,
-                link,
-                thumbnail,
-                price,
-                category: extractCategory(title)
-            });
+            products.push({ title: title, link: link, thumbnail: thumbnail, price: price, category: extractCategory(title) });
         });
 
+        log('PARSE', 'Parsed products:', products.length);
         return products;
     }
 
     async function fetchProducts() {
-        console.log('🔄 Starting to fetch products...');
-        showLoading();
+        log('FETCH', '========== STARTING FETCH ==========');
 
-        // 複数のプロキシを試行
         const proxyUrls = [
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(RSS_FEED_URL)}`,
-            `https://corsproxy.io/?${encodeURIComponent(RSS_FEED_URL)}`
+            'https://api.allorigins.win/raw?url=' + encodeURIComponent(RSS_FEED_URL),
+            'https://corsproxy.io/?' + encodeURIComponent(RSS_FEED_URL)
         ];
 
-        for (const proxyUrl of proxyUrls) {
+        for (var i = 0; i < proxyUrls.length; i++) {
             try {
-                console.log('📡 Trying:', proxyUrl);
-                const response = await fetch(proxyUrl);
+                log('FETCH', 'Trying proxy ' + (i + 1) + '...');
+                
+                var response = await fetch(proxyUrls[i]);
+                log('FETCH', 'Response status:', response.status);
                 
                 if (!response.ok) {
-                    console.warn(`⚠️ HTTP ${response.status}`);
-                    continue;
+                    throw new Error('HTTP ' + response.status);
                 }
 
-                const text = await response.text();
-                console.log('📦 Received data, length:', text.length);
+                var text = await response.text();
+                log('FETCH', 'Received bytes:', text.length);
 
-                if (text.includes('<?xml') || text.includes('<rss')) {
-                    const products = parseRSSXML(text);
-                    if (products.length > 0) {
-                        console.log('✅ Successfully parsed', products.length, 'products');
+                if (text.indexOf('<?xml') !== -1 || text.indexOf('<rss') !== -1) {
+                    var products = parseRSSXML(text);
+                    if (products && products.length > 0) {
+                        log('FETCH', '✅ SUCCESS with proxy ' + (i + 1));
                         displayProducts(products);
                         return;
                     }
                 }
             } catch (error) {
-                console.warn('⚠️ Proxy failed:', error.message);
+                log('FETCH', '❌ Proxy ' + (i + 1) + ' failed:', error.message);
             }
         }
 
-        // すべてのプロキシが失敗した場合、フォールバックデータを使用
-        console.log('⚠️ Using fallback data');
+        // フォールバック
+        log('FETCH', '⚠️ Using FALLBACK data');
         displayProducts(FALLBACK_PRODUCTS);
     }
 
+    // ========================================
     // 初期化
-    console.log('📄 Document ready state:', document.readyState);
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
+    // ========================================
+    function init() {
+        if (isInitialized) {
+            log('INIT', 'Already initialized, skipping');
+            return;
+        }
+        
+        log('INIT', '========== INIT START ==========');
+        log('INIT', 'readyState:', document.readyState);
+
+        if (!findContainer()) {
+            log('INIT', 'Container not found, retry in 500ms');
+            setTimeout(init, 500);
+            return;
+        }
+
+        isInitialized = true;
+        log('INIT', '✅ Container ready, starting fetch');
+        fetchProducts();
+    }
+
+    // ========================================
+    // イベントリスナー（複数の方法で確実に実行）
+    // ========================================
+    log('BOOT', 'Setting up event listeners...');
+    log('BOOT', 'readyState:', document.readyState);
+
+    // 方法1: DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+        log('EVENT', 'DOMContentLoaded fired');
         init();
+    });
+
+    // 方法2: window.onload
+    window.addEventListener('load', function() {
+        log('EVENT', 'window.load fired');
+        init();
+    });
+
+    // 方法3: 既にDOMが読み込まれている場合
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+        log('BOOT', 'DOM already ready, calling init in 100ms');
+        setTimeout(init, 100);
     }
 
 })();
