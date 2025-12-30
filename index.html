@@ -289,6 +289,62 @@
             border: none;
         }
 
+        /* ページ下部中央ナビゲーション */
+        .hero-navigation {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            text-align: center;
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        .hero-nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            font-family: 'Shippori Mincho', serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.9);
+            mix-blend-mode: difference;
+        }
+
+        .hero-nav-links a {
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease, opacity 0.3s ease;
+        }
+
+        .hero-nav-links a:hover {
+            color: #ffffff;
+            opacity: 1;
+        }
+
+        .hero-nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: width 0.3s ease;
+        }
+
+        .hero-nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero-nav-separator {
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0 0.5rem;
+        }
+
         /* ========================================
            Section B: コンセプトメッセージ
         ======================================== */
@@ -373,6 +429,15 @@
                 right: 20px;
             }
 
+            .hero-navigation {
+                bottom: 30px;
+            }
+
+            .hero-nav-links {
+                font-size: 0.8rem;
+                gap: 1rem;
+            }
+
             .concept-title {
                 font-size: 2.2rem;
                 margin-bottom: 3rem;
@@ -403,25 +468,6 @@
         </svg>
     </div>
 
-    <header class="fixed w-full bg-white/95 backdrop-blur-sm z-50 py-5 border-b border-gray-100 transition-all">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <h1 class="font-serif text-xl tracking-widest font-medium">工藝 迎ふ</h1>
-            <nav class="hidden md:flex space-x-10 text-xs tracking-widest text-brand-gray">
-                <a href="https://mukai6666.thebase.in/about" class="hover:text-brand-black transition relative group">
-                    私たちのこと
-                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="https://mukai6666.thebase.in/" class="hover:text-brand-black transition relative group">
-                    商品一覧
-                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="https://thebase.com/inquiry/mukai6666" class="hover:text-brand-black transition relative group">
-                    お問い合わせ
-                    <span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-black transition-all duration-300 group-hover:w-full"></span>
-                </a>
-            </nav>
-        </div>
-    </header>
 
     <!-- オープニングマスク -->
     <div class="opening-mask"></div>
@@ -462,6 +508,17 @@
         <div class="hero-movie-box">
             <iframe width="560" height="315" src="https://www.youtube.com/embed/XnLsp7ugrRE?si=TweuDC7miZYmUo_C&amp;start=2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
+
+        <!-- ページ下部中央ナビゲーション -->
+        <nav class="hero-navigation">
+            <div class="hero-nav-links">
+                <a href="https://mukai6666.thebase.in/about">私たちのこと</a>
+                <span class="hero-nav-separator">/</span>
+                <a href="https://mukai6666.thebase.in/">商品一覧</a>
+                <span class="hero-nav-separator">/</span>
+                <a href="https://thebase.com/inquiry/mukai6666">お問い合わせ</a>
+            </div>
+        </nav>
 
     </section>
 
@@ -579,6 +636,7 @@
             const heroTitleBottom = document.querySelector('.hero-title-bottom');
             const heroSubcopy = document.querySelector('.hero-subcopy');
             const heroMovieBox = document.querySelector('.hero-movie-box');
+            const heroNavigation = document.querySelector('.hero-navigation');
             const heroBgOverlay = document.querySelector('.hero-bg-overlay');
 
             // ヒーローセクションの背景を即座に表示（空白期間をなくす）
@@ -651,6 +709,13 @@
                 { opacity: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power3.out' },
                 4.5
             );
+
+            // 8. ナビゲーションをフェードイン（サブコピーと同じタイミング）
+            masterTL.fromTo(heroNavigation,
+                { opacity: 0, filter: 'blur(10px)' },
+                { opacity: 1, filter: 'blur(0px)', duration: 1.6, ease: 'power3.out' },
+                4.5
+            );
         });
 
         // DOMContentLoadedでScrollTriggerなどを設定
@@ -663,6 +728,7 @@
             const heroTitleBottom = document.querySelector('.hero-title-bottom');
             const heroSubcopy = document.querySelector('.hero-subcopy');
             const heroMovieBox = document.querySelector('.hero-movie-box');
+            const heroNavigation = document.querySelector('.hero-navigation');
             const heroDarkOverlay = document.querySelector('.hero-dark-overlay');
             const conceptOverlay = document.querySelector('.concept-overlay');
             const conceptSection = document.querySelector('#concept-section');
@@ -700,6 +766,11 @@
                 filter: 'blur(0px)'
             }, 0);
 
+            scrollTL.set(heroNavigation, {
+                opacity: 1,
+                filter: 'blur(0px)'
+            }, 0);
+
             scrollTL.set(heroDarkOverlay, {
                 backgroundColor: 'rgba(0, 0, 0, 0)'
             }, 0);
@@ -731,6 +802,15 @@
             scrollTL.to(heroMovieBox, {
                 opacity: 0,
                 y: -60,
+                filter: 'blur(12px)',
+                duration: 1.2,
+                ease: 'power2.out'
+            }, 0);
+
+            // ナビゲーションの退場（サブコピーと同時に開始）
+            scrollTL.to(heroNavigation, {
+                opacity: 0,
+                y: -30,
                 filter: 'blur(12px)',
                 duration: 1.2,
                 ease: 'power2.out'
