@@ -84,8 +84,6 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
         const imageUrl = item.thumbnail || DEFAULT_IMAGE;
         const title = (item.title || '商品名未設定').replace(/¥[\d,]+/g, '').trim();
         const link = item.link || 'https://mukai6666.thebase.in/';
-        const category = item.category || extractCategory(title);
-        const price = item.price || '';
 
         return `
             <a href="${link}" target="_blank" rel="noopener noreferrer" class="product-item">
@@ -93,10 +91,10 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
                     <img src="${imageUrl}" alt="${title}" onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}';">
                 </div>
                 <div class="product-info">
-                    <span class="product-category">${category}</span>
                     <h4 class="product-title">${title}</h4>
-                    ${price ? `<span class="product-price">${price}</span>` : ''}
+                    <span class="product-category">焙煎豆</span>
                 </div>
+                <div class="product-arrow">↗</div>
             </a>
         `;
     }

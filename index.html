@@ -608,40 +608,47 @@
         }
 
         .product-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-item {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             text-decoration: none;
             color: inherit;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
             cursor: pointer;
             position: relative;
             z-index: 10;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background-color: transparent;
+        }
+
+        .product-item:first-child {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .product-item:hover {
-            transform: translateY(-5px);
-            opacity: 0.9;
+            opacity: 0.7;
         }
 
         .product-item:hover .product-image img {
             transform: scale(1.05);
         }
 
+        .product-item:hover .product-arrow {
+            transform: translate(3px, -3px);
+        }
+
         .product-image {
-            width: 100%;
-            aspect-ratio: 1 / 1;
+            width: 280px;
+            min-width: 280px;
+            aspect-ratio: 16 / 10;
             overflow: hidden;
-            background-color: #f5f5f5;
+            background-color: #e8e8e6;
+            flex-shrink: 0;
         }
 
         .product-image img {
@@ -652,54 +659,72 @@
         }
 
         .product-info {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-            padding: 1rem;
+            justify-content: center;
+            padding: 0 3rem;
+            min-width: 0;
         }
 
         .product-category {
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             color: #8C7E72;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            font-weight: 500;
+            letter-spacing: 0.12em;
+            margin-top: 0.8rem;
         }
 
         .product-title {
             font-family: 'Noto Serif JP', serif;
-            font-size: 0.95rem;
+            font-size: 1.5rem;
             font-weight: 500;
-            line-height: 1.6;
+            line-height: 1.5;
             color: #2C2C2C;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: 0.3rem;
         }
 
         .product-price {
-            font-size: 0.85rem;
-            color: #595959;
-            font-weight: 600;
+            display: none;
+        }
+
+        .product-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            flex-shrink: 0;
+            font-size: 1.5rem;
+            color: #8C7E72;
+            transition: transform 0.3s ease;
         }
 
         /* Lineup レスポンシブ */
-        @media (max-width: 1024px) {
-            .product-list {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
+        @media (max-width: 768px) {
+            .product-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1.5rem 0;
             }
-        }
 
-        @media (max-width: 640px) {
-            .product-list {
-                grid-template-columns: 1fr;
-                gap: 2rem;
+            .product-image {
+                width: 100%;
+                min-width: auto;
+                aspect-ratio: 16 / 9;
+                margin-bottom: 1rem;
+            }
+
+            .product-info {
+                padding: 0;
             }
 
             .product-title {
-                font-size: 0.9rem;
+                font-size: 1.1rem;
+            }
+
+            .product-arrow {
+                position: absolute;
+                top: 1.5rem;
+                right: 0;
             }
         }
     </style>
@@ -802,9 +827,9 @@
     <!-- 動画から白背景への遷移オーバーレイ -->
     <div id="transition-overlay"></div>
 
-    <section class="py-32 px-6" id="lineup-section">
+    <section class="py-16 px-6" id="lineup-section">
         <div class="max-w-6xl mx-auto">
-            <div class="lineup-header flex justify-between items-end mb-16 px-2">
+            <div class="lineup-header flex justify-between items-end mb-10 px-2">
                 <div>
                     <h3 class="font-serif text-3xl mb-3">Lineup</h3>
                     <p class="text-xs text-brand-gray tracking-widest">焙煎豆のラインナップ</p>
@@ -819,30 +844,30 @@
                         <img src="https://baseec-img-mng.akamaized.net/images/item/origin/0cfd23a87bc0501286a77d7966609f8d.jpg?imformat=generic&q=90&im=Resize,width=640" alt="【エチオピア】モカ ゲイシャ G1 Natural 150g">
                     </div>
                     <div class="product-info">
-                        <span class="product-category">ETHIOPIA</span>
                         <h4 class="product-title">【エチオピア】モカ ゲイシャ G1 Natural 150g</h4>
-                        <span class="product-price">1,720円</span>
+                        <span class="product-category">焙煎豆</span>
                     </div>
+                    <div class="product-arrow">↗</div>
                 </a>
                 <a href="https://mukai6666.thebase.in/items/114467561" target="_blank" rel="noopener noreferrer" class="product-item">
                     <div class="product-image">
                         <img src="https://baseec-img-mng.akamaized.net/images/item/origin/3d6f16d41ea4e83ec52461c4ee35d336.jpg?imformat=generic&q=90&im=Resize,width=640" alt="【エチオピア】モカ チェルベサ G1 Natural 150g">
                     </div>
                     <div class="product-info">
-                        <span class="product-category">ETHIOPIA</span>
                         <h4 class="product-title">【エチオピア】モカ チェルベサ G1 Natural 150g</h4>
-                        <span class="product-price">1,620円</span>
+                        <span class="product-category">焙煎豆</span>
                     </div>
+                    <div class="product-arrow">↗</div>
                 </a>
                 <a href="https://mukai6666.thebase.in/items/105116833" target="_blank" rel="noopener noreferrer" class="product-item">
                     <div class="product-image">
                         <img src="https://baseec-img-mng.akamaized.net/images/item/origin/5c2a378346e48ff1ce2fac058a75f096.jpg?imformat=generic&q=90&im=Resize,width=640" alt="タンザニア AA トップ イエンガ -Speciality- 150g">
                     </div>
                     <div class="product-info">
-                        <span class="product-category">TANZANIA</span>
                         <h4 class="product-title">タンザニア AA トップ イエンガ -Speciality- 150g</h4>
-                        <span class="product-price">1,600円</span>
+                        <span class="product-category">焙煎豆</span>
                     </div>
+                    <div class="product-arrow">↗</div>
                 </a>
             </div>
 
@@ -852,7 +877,7 @@
         </div>
     </section>
 
-    <section id="craftsmanship-section" class="py-40 px-6">
+    <section id="craftsmanship-section" class="py-20 px-6">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
             <div class="w-full md:w-1/2 h-[500px] bg-gray-200 fade-up">
                 <img src="https://images.unsplash.com/photo-1517260739337-6799d2ff9ee3?auto=format&fit=crop&q=80" alt="Roasting Process" class="w-full h-full object-cover grayscale-[20%]">
@@ -873,7 +898,7 @@
         </div>
     </section>
 
-    <footer class="bg-white py-24 px-6 border-t border-gray-100 text-brand-black">
+    <footer class="bg-white py-16 px-6 border-t border-gray-100 text-brand-black">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
             <div>
                 <h5 class="font-serif text-xl mb-6 tracking-widest">工藝 迎ふ</h5>
