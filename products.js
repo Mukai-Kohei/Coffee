@@ -181,6 +181,11 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
     async function fetchProducts() {
         log('FETCH', '========== STARTING FETCH ==========');
 
+        // まずフォールバックを即表示（何も出ない状態をなくす）
+        log('FETCH', 'Displaying FALLBACK first');
+        displayProducts(FALLBACK_PRODUCTS);
+
+        // その後、RSSを取得できたら差し替え
         const proxyUrls = [
             'https://api.allorigins.win/raw?url=' + encodeURIComponent(RSS_FEED_URL),
             'https://corsproxy.io/?' + encodeURIComponent(RSS_FEED_URL)
@@ -203,7 +208,7 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
                 if (text.indexOf('<?xml') !== -1 || text.indexOf('<rss') !== -1) {
                     var products = parseRSSXML(text);
                     if (products && products.length > 0) {
-                        log('FETCH', '✅ SUCCESS with proxy ' + (i + 1));
+                        log('FETCH', '✅ SUCCESS with proxy ' + (i + 1) + ', updating display');
                         displayProducts(products);
                         return;
                     }
@@ -213,9 +218,7 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
             }
         }
 
-        // フォールバック
-        log('FETCH', '⚠️ Using FALLBACK data');
-        displayProducts(FALLBACK_PRODUCTS);
+        log('FETCH', '⚠️ All proxies failed, keeping FALLBACK data');
     }
 
     // ========================================
