@@ -160,7 +160,7 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: var(--bg-color);
+            background-color: #000000;
             z-index: 9998; /* プリローダーより下 */
             clip-path: inset(0% 48% 0% 48%); /* 初期：中央スリット */
             opacity: 0; /* 初期は非表示 */
@@ -297,35 +297,21 @@
             overflow: hidden;
             opacity: 0;
             filter: blur(10px);
-        }
-
-        .hero-movie-box iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* YouTube カスタムカバー画像 */
-        .hero-movie-cover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
+            display: block;
+            text-decoration: none;
             cursor: pointer;
-            transition: opacity 0.4s ease;
         }
 
-        .hero-movie-cover img {
+        /* YouTube サムネイル画像 */
+        .hero-movie-thumb {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
         }
 
-        .hero-movie-cover.hidden {
-            opacity: 0;
-            pointer-events: none;
+        .hero-movie-box:hover .hero-movie-thumb {
+            transform: scale(1.05);
         }
 
         /* カスタム再生ボタン */
@@ -453,29 +439,29 @@
         /* 詩的テキストのスタイル */
         .concept-line {
             font-family: 'Noto Serif JP', serif;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 400;
-            line-height: 2.4;
+            line-height: 2.2;
             letter-spacing: 0.08em;
             color: #ffffff;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             opacity: 0;
             transform: translateY(20px);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
         }
 
         /* 段落間の余白 */
         .concept-line.paragraph-gap {
-            margin-top: 2.5rem;
+            margin-top: 2rem;
         }
 
         /* タイトル行のスタイル */
         .concept-title-line {
-            font-size: 3rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.18em;
             color: var(--accent-color);
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
         }
 
@@ -488,7 +474,7 @@
             writing-mode: vertical-rl;
             text-orientation: mixed;
             font-family: 'Noto Serif JP', serif;
-            font-size: 8rem;
+            font-size: 6rem;
             font-weight: 300;
             color: rgba(255, 255, 255, 0.08);
             letter-spacing: 0.3em;
@@ -549,8 +535,8 @@
             }
 
             .concept-line {
-                font-size: 1rem;
-                line-height: 2;
+                font-size: 0.9rem;
+                line-height: 1.9;
             }
 
             .concept-content {
@@ -558,18 +544,18 @@
             }
 
             .concept-decoration {
-                font-size: 4rem;
+                font-size: 3.5rem;
                 right: 2%;
             }
 
             .concept-line.paragraph-gap {
-                margin-top: 1.5rem;
+                margin-top: 1.2rem;
             }
 
             .concept-title-line {
-                font-size: 1.8rem;
-                letter-spacing: 0.15em;
-                margin-bottom: 2rem;
+                font-size: 1.5rem;
+                letter-spacing: 0.12em;
+                margin-bottom: 1.5rem;
             }
 
             .hero-navigation {
@@ -582,9 +568,130 @@
             }
 
         }
+
+        /* ========================================
+           Lineup セクション（リストデザイン）
+        ======================================== */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-item:first-child {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .product-item:hover {
+            opacity: 0.7;
+        }
+
+        .product-item:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-image {
+            width: 200px;
+            min-width: 200px;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background-color: #e5e5e5;
+            flex-shrink: 0;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 2rem;
+            min-width: 0;
+        }
+
+        .product-category {
+            font-size: 0.7rem;
+            color: #8C7E72;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .product-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            color: #2C2C2C;
+        }
+
+        .product-price {
+            font-size: 0.9rem;
+            color: #595959;
+            font-weight: 500;
+        }
+
+        .product-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            color: #8C7E72;
+            transition: transform 0.3s ease;
+        }
+
+        .product-item:hover .product-arrow {
+            transform: translate(3px, -3px);
+        }
+
+        /* Lineup レスポンシブ */
+        @media (max-width: 768px) {
+            .product-item {
+                flex-direction: column;
+                padding: 1.5rem 0;
+            }
+
+            .product-image {
+                width: 100%;
+                min-width: auto;
+                aspect-ratio: 16 / 9;
+                margin-bottom: 1rem;
+            }
+
+            .product-info {
+                padding: 0;
+            }
+
+            .product-title {
+                font-size: 1rem;
+            }
+
+            .product-arrow {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body class="text-brand-black font-sans antialiased bg-white">
+<body class="text-brand-black font-sans antialiased" style="background-color: #000;">
 
     <!-- Preloader -->
     <div id="preloader" class="preloader">
@@ -641,17 +748,11 @@
             </div>
         </div>
 
-        <!-- 右下YouTube動画（カスタムカバー付き） -->
-        <div class="hero-movie-box">
-            <!-- YouTube IFrame Player API用のコンテナ -->
-            <div id="youtube-player"></div>
-            
-            <!-- カスタムカバー画像（再生ボタンを隠す） -->
-            <div class="hero-movie-cover" id="youtube-cover">
-                <img src="./IMG_1854.jpg" alt="動画カバー" id="youtube-cover-img">
-                <div class="hero-movie-play-btn"></div>
-            </div>
-        </div>
+        <!-- 右下YouTube動画（リンク） -->
+        <a href="https://www.youtube.com/watch?v=XnLsp7ugrRE" target="_blank" rel="noopener noreferrer" class="hero-movie-box">
+            <img src="./IMG_1854.jpg" alt="動画を見る" class="hero-movie-thumb">
+            <div class="hero-movie-play-btn"></div>
+        </a>
 
         <!-- ページ下部中央ナビゲーション -->
         <nav class="hero-navigation">
@@ -685,9 +786,9 @@
         </div>
     </section>
 
-    <section class="bg-brand-light py-32 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="lineup-header flex justify-between items-end mb-20 px-2">
+    <section class="bg-brand-light py-32 px-6" id="lineup-section">
+        <div class="max-w-4xl mx-auto">
+            <div class="lineup-header flex justify-between items-end mb-12 px-2">
                 <div>
                     <h3 class="font-serif text-3xl mb-3">Lineup</h3>
                     <p class="text-xs text-brand-gray tracking-widest">焙煎豆のラインナップ</p>
@@ -695,12 +796,16 @@
                 <a href="https://mukai6666.thebase.in/" class="hidden md:block text-xs border-b border-brand-black pb-1 hover:opacity-50 transition">すべて見る</a>
             </div>
 
-            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
-                <!-- 商品はJavaScriptで動的に読み込まれます -->
+            <div id="product-list" class="product-list">
+                <!-- 商品はRSSから動的に読み込まれます -->
+                <div class="text-center py-12">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-accent mb-4"></div>
+                    <p class="text-sm text-brand-gray">商品を読み込み中...</p>
+                </div>
             </div>
 
-            <div class="mt-12 text-center md:hidden">
-                <a href="https://mukai6666.thebase.in/" class="text-xs border-b border-brand-black pb-1">すべての商品を見る</a>
+            <div class="mt-12 text-center">
+                <a href="https://mukai6666.thebase.in/" class="inline-block text-xs border-b border-brand-black pb-1 hover:opacity-50 transition">すべての商品を見る →</a>
             </div>
         </div>
     </section>
@@ -767,10 +872,21 @@
     <!-- 商品情報取得スクリプト -->
     <script src="./products.js"></script>
 
-    <!-- YouTube IFrame Player API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
+        // リロード時にTOPから表示（複数の方法で確実に）
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        // ページ表示時にもスクロール位置をリセット
+        window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+        });
+
         // GSAPとScrollTriggerを登録
         gsap.registerPlugin(ScrollTrigger);
 
@@ -799,44 +915,6 @@
             });
 
             gsap.ticker.lagSmoothing(0);
-        }
-
-        // ========================================
-        // YouTube IFrame Player API
-        // ========================================
-        let youtubePlayer;
-
-        function onYouTubeIframeAPIReady() {
-            youtubePlayer = new YT.Player('youtube-player', {
-                height: '100%',
-                width: '100%',
-                videoId: 'XnLsp7ugrRE',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 1,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'modestbranding': 1,
-                    'start': 2,
-                    'playsinline': 1
-                },
-                events: {
-                    'onReady': onPlayerReady
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            // カバー画像のクリックイベントを設定
-            const cover = document.getElementById('youtube-cover');
-            if (cover) {
-                cover.addEventListener('click', () => {
-                    // 動画を再生
-                    youtubePlayer.playVideo();
-                    // カバーをフェードアウト
-                    cover.classList.add('hidden');
-                });
-            }
         }
 
         // ページ読み込み時に実行
@@ -900,6 +978,8 @@
                 duration: 0.4,
                 onComplete: () => {
                     openingMask.style.display = 'none';
+                    // 背景色を白に変更
+                    document.body.style.backgroundColor = '#ffffff';
                 }
             }, 4.2);
 
