@@ -219,15 +219,15 @@
         /* 右上タイトル「陶器、」 */
         .hero-title-top {
             position: absolute;
-            top: 15%;
-            right: 3%;
+            top: 8%;
+            right: 1%;
             z-index: 10;
             writing-mode: vertical-rl;
             text-orientation: upright;
             font-family: 'Shippori Mincho', serif;
-            font-size: 8rem;
+            font-size: 9rem;
             font-weight: 800;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: var(--accent-color);
             mix-blend-mode: difference;
             opacity: 0;
@@ -237,15 +237,15 @@
         /* 左下タイトル「焙煎」 */
         .hero-title-bottom {
             position: absolute;
-            bottom: 15%;
-            left: 3%;
+            bottom: 8%;
+            left: 1%;
             z-index: 10;
             writing-mode: vertical-rl;
             text-orientation: upright;
             font-family: 'Shippori Mincho', serif;
-            font-size: 8rem;
+            font-size: 9rem;
             font-weight: 800;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: #ffffff;
             mix-blend-mode: difference;
             opacity: 0;
@@ -1234,12 +1234,12 @@
                 ease: 'power2.in'
             }, 4.0);
 
-            // === Step D: 背景を黒から白へ徐々に遷移 ===
+            // === Step D: 背景を黒から白へ徐々に遷移（遅めに開始） ===
             scrollTL.to(heroDarkOverlay, {
                 backgroundColor: 'rgba(245, 245, 243, 1)',
-                duration: 1.5,
+                duration: 2.0,
                 ease: 'power2.inOut'
-            }, 4.0);
+            }, 5.5);
 
             // ========================================
             // Phase 2.5: 詩的テキストの順次フェードインアニメーション
@@ -1287,9 +1287,9 @@
                     opacity: 1,
                     scrollTrigger: {
                         trigger: lineupSection,
-                        start: 'top bottom',    // Lineupセクションの上端が画面下端に達した時
-                        end: 'top 30%',         // Lineupセクションの上端が画面30%に達した時
-                        scrub: 1,               // スクロールに同期
+                        start: 'top 60%',       // Lineupセクションの上端が画面60%に達した時（遅め）
+                        end: 'top 10%',         // Lineupセクションの上端が画面10%に達した時
+                        scrub: 1.5,             // スクロールに同期（少し遅延）
                         onLeave: () => {
                             // Lineupセクションを過ぎたらオーバーレイを非表示
                             gsap.set(transitionOverlay, { opacity: 0 });
