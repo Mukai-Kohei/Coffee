@@ -569,6 +569,123 @@
 
         }
 
+        /* スマホ向け（480px以下） */
+        @media (max-width: 480px) {
+            /* 動画背景をスマホに最適化（縦長画面対応） */
+            .hero-bg-video {
+                overflow: hidden;
+            }
+
+            .hero-bg-video iframe {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 300vw !important;
+                height: 168.75vw !important;
+                min-height: 100vh !important;
+                min-width: 177.78vh !important;
+            }
+
+            /* タイトル「陶器、」「焙煎」 */
+            .hero-title-top,
+            .hero-title-bottom {
+                font-size: 3rem;
+                letter-spacing: 0.06em;
+            }
+
+            .hero-title-top {
+                top: 12%;
+                right: 2%;
+            }
+
+            .hero-title-bottom {
+                bottom: 20%;
+                left: 2%;
+            }
+
+            /* 左上ブランド名 */
+            .hero-brand {
+                font-size: 0.85rem;
+                top: 3%;
+                left: 3%;
+            }
+
+            /* サブコピー */
+            .hero-subcopy-box {
+                padding: 1.2rem 1.5rem;
+                max-width: 90vw;
+            }
+
+            .hero-subcopy-text {
+                font-size: 0.75rem;
+                line-height: 2;
+            }
+
+            /* YouTube動画サムネイル */
+            .hero-movie-box {
+                width: 100px;
+                height: 56px;
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .hero-movie-play-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            /* ナビゲーション */
+            .hero-navigation {
+                bottom: 20px;
+            }
+
+            .hero-nav-links {
+                font-size: 0.7rem;
+                gap: 0.6rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 1rem;
+            }
+
+            .hero-nav-separator {
+                display: none;
+            }
+
+            /* コンセプトセクション */
+            .concept-line {
+                font-size: 0.8rem;
+                line-height: 1.8;
+            }
+
+            .concept-title-line {
+                font-size: 1.3rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .concept-content {
+                padding: 0 4%;
+            }
+
+            .concept-decoration {
+                font-size: 2.5rem;
+                right: 3%;
+            }
+
+            .concept-line.paragraph-gap {
+                margin-top: 1rem;
+            }
+
+            /* Lineupセクション */
+            .lineup-header h3 {
+                font-size: 1.5rem !important;
+            }
+
+            .lineup-header p {
+                font-size: 0.65rem !important;
+            }
+        }
+
         /* ========================================
            遷移オーバーレイ（動画→白背景）
         ======================================== */
@@ -698,7 +815,7 @@
             transition: transform 0.3s ease;
         }
 
-        /* Lineup レスポンシブ */
+        /* Lineup レスポンシブ（タブレット） */
         @media (max-width: 768px) {
             .product-item {
                 flex-direction: column;
@@ -725,6 +842,33 @@
                 position: absolute;
                 top: 1.5rem;
                 right: 0;
+            }
+        }
+
+        /* Lineup レスポンシブ（スマホ） */
+        @media (max-width: 480px) {
+            .product-item {
+                padding: 1.2rem 0;
+            }
+
+            .product-image {
+                aspect-ratio: 16 / 10;
+                margin-bottom: 0.8rem;
+            }
+
+            .product-title {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .product-category {
+                font-size: 0.65rem;
+                margin-top: 0.4rem;
+            }
+
+            .product-arrow {
+                font-size: 1.2rem;
+                top: 1.2rem;
             }
         }
     </style>
@@ -827,12 +971,12 @@
     <!-- 動画から白背景への遷移オーバーレイ -->
     <div id="transition-overlay"></div>
 
-    <section class="py-16 px-6" id="lineup-section">
+    <section class="py-10 md:py-16 px-4 md:px-6" id="lineup-section">
         <div class="max-w-6xl mx-auto">
-            <div class="lineup-header flex justify-between items-end mb-10 px-2">
+            <div class="lineup-header flex justify-between items-end mb-6 md:mb-10 px-2">
                 <div>
-                    <h3 class="font-serif text-3xl mb-3">Lineup</h3>
-                    <p class="text-xs text-brand-gray tracking-widest">焙煎豆のラインナップ</p>
+                    <h3 class="font-serif text-2xl md:text-3xl mb-2 md:mb-3">Lineup</h3>
+                    <p class="text-[10px] md:text-xs text-brand-gray tracking-widest">焙煎豆のラインナップ</p>
                 </div>
                 <a href="https://mukai6666.thebase.in/" class="hidden md:block text-xs border-b border-brand-black pb-1 hover:opacity-50 transition">すべて見る</a>
             </div>
@@ -877,29 +1021,29 @@
         </div>
     </section>
 
-    <section id="craftsmanship-section" class="py-20 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
-            <div class="w-full md:w-1/2 h-[500px] bg-gray-200 fade-up">
+    <section id="craftsmanship-section" class="py-12 md:py-20 px-4 md:px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16">
+            <div class="w-full md:w-1/2 h-[280px] md:h-[500px] bg-gray-200 fade-up">
                 <img src="https://images.unsplash.com/photo-1517260739337-6799d2ff9ee3?auto=format&fit=crop&q=80" alt="Roasting Process" class="w-full h-full object-cover grayscale-[20%]">
             </div>
             <div class="w-full md:w-1/2 fade-up">
-                <span class="text-xs tracking-widest text-brand-gray block mb-4">CRAFTSMANSHIP</span>
-                <h3 class="font-serif text-3xl mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
-                <p class="text-brand-gray leading-loose mb-8 text-sm">
-                    当店の焙煎は、一般的なガス火や電気式とは異なります。<br>
-                    陶器製の焙煎機による熱伝達効果と、<br>
-                    おが備長炭による炭火の遠赤外線効果。<br><br>
-                    この二つを最大限に利用し、職人が豆の様子を見極めながら<br>
-                    じっくりと時間をかけて焙煎しています。<br>
+                <span class="text-xs tracking-widest text-brand-gray block mb-2 md:mb-4">CRAFTSMANSHIP</span>
+                <h3 class="font-serif text-xl md:text-3xl mb-4 md:mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
+                <p class="text-brand-gray leading-relaxed md:leading-loose mb-4 md:mb-8 text-xs md:text-sm">
+                    当店の焙煎は、一般的なガス火や電気式とは異なります。
+                    陶器製の焙煎機による熱伝達効果と、
+                    おが備長炭による炭火の遠赤外線効果。<br class="hidden md:block"><br class="hidden md:block">
+                    この二つを最大限に利用し、職人が豆の様子を見極めながら
+                    じっくりと時間をかけて焙煎しています。
                     量産はできませんが、一つひとつに心を込めて。
                 </p>
-                <a href="https://mukai6666.thebase.in/about" class="inline-block px-8 py-3 border border-brand-black text-xs tracking-widest hover:bg-brand-black hover:text-white transition">詳しく見る</a>
+                <a href="https://mukai6666.thebase.in/about" class="inline-block px-6 md:px-8 py-2 md:py-3 border border-brand-black text-xs tracking-widest hover:bg-brand-black hover:text-white transition">詳しく見る</a>
             </div>
         </div>
     </section>
 
-    <footer class="bg-white py-16 px-6 border-t border-gray-100 text-brand-black">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+    <footer class="bg-white py-10 md:py-16 px-4 md:px-6 border-t border-gray-100 text-brand-black">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
             <div>
                 <h5 class="font-serif text-xl mb-6 tracking-widest">工藝 迎ふ</h5>
                 <p class="text-xs text-brand-gray leading-loose">
