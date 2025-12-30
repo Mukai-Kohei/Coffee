@@ -97,7 +97,6 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
                     <h4 class="product-title">${title}</h4>
                     ${price ? `<span class="product-price">${price}</span>` : ''}
                 </div>
-                <div class="product-arrow">↗</div>
             </a>
         `;
     }
