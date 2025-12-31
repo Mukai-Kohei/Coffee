@@ -567,10 +567,17 @@
             }
 
             /* サブコピー */
+            .hero-subcopy {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
             .hero-subcopy-box {
                 padding: 1.2rem 1.5rem;
                 max-width: 90vw;
-                display: inline-block;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             .hero-subcopy-text {

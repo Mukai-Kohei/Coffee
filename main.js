@@ -100,6 +100,8 @@
                     document.body.classList.remove('no-scroll');
                     // 背景色をブランドライトに変更
                     document.body.style.backgroundColor = '#F5F5F3';
+                    // 最終的な中央揃えを強制（レースコンディション対策）
+                    gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 0 });
                     // スクロール位置を再度リセット
                     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                     // ScrollTriggerを再度リフレッシュ
