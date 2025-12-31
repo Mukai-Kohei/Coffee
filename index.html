@@ -66,25 +66,13 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: #1a1614;
-            background-size: cover; /* 画面端いっぱいに表示 */
-            background-position: center center;
-            background-repeat: no-repeat;
+            background-color: #F5F5F3; /* 白に近い薄いグレー */
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .preloader::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(26, 22, 20, 0.5);
-            z-index: 1;
         }
 
         .preloader.hidden {
@@ -106,7 +94,7 @@
         .preloader-circle {
             width: 100px;
             height: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(44, 44, 44, 0.2);
             border-radius: 50%;
             position: relative;
         }
@@ -119,7 +107,7 @@
             width: 100px;
             height: 100px;
             border: 1px solid transparent;
-            border-top-color: rgba(255, 255, 255, 0.9);
+            border-top-color: rgba(44, 44, 44, 0.9);
             border-radius: 50%;
             animation: spinLoader 1.5s linear infinite;
         }
@@ -138,21 +126,7 @@
             font-size: 0.9rem;
             font-weight: 400;
             letter-spacing: 0.25em;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        /* 右下ブランド名 */
-        .preloader-brand {
-            position: absolute;
-            bottom: 5%;
-            right: 5%;
-            z-index: 10;
-            font-family: 'Shippori Mincho', serif;
-            font-size: 1.5rem;
-            font-weight: 500;
-            letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            color: #2C2C2C;
         }
 
         /* レスポンシブ対応 */
@@ -170,12 +144,6 @@
             .preloader-loading-text {
                 font-size: 0.8rem;
             }
-
-            .preloader-brand {
-                font-size: 1.2rem;
-                bottom: 4%;
-                right: 4%;
-            }
         }
 
         /* ========================================
@@ -188,7 +156,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            visibility: visible; /* 最初から表示（空白期間をなくす） */
+            opacity: 0; /* ローディング中は非表示 */
         }
 
         /* 背景動画コンテナ */
@@ -423,7 +391,7 @@
 
         #concept-section {
             position: relative;
-            height: 100vh;
+            height: 100vh; /* CRAFTSMANSHIPとの距離を確保 */
             z-index: 50;
             pointer-events: none;
         }
@@ -482,9 +450,11 @@
             letter-spacing: 0.08em;
             color: #ffffff;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transform: translateY(20px);
             margin-bottom: 0.4rem;
+            /* ワイプアニメーション用 */
+            opacity: 0;
+            clip-path: inset(0 100% 0 0); /* 右から左へマスク（初期：非表示） */
+            transform: translateX(-20px);
         }
 
         /* 段落間の余白 */
@@ -723,7 +693,7 @@
             height: 100vh;
             background-color: #F5F5F3;
             opacity: 0;
-            z-index: 55;
+            z-index: 100;
             pointer-events: none;
         }
 
@@ -750,6 +720,13 @@
 
         #craftsmanship-section h3 {
             color: #ffffff;
+        }
+
+        /* Craftsmanshipセクションのワイプアニメーション */
+        .craftsmanship-line {
+            opacity: 0;
+            clip-path: inset(0 100% 0 0);
+            transform: translateX(-15px);
         }
 
         #craftsmanship-section a.border-brand-black {
@@ -792,7 +769,7 @@
             align-items: center;
             text-decoration: none;
             color: inherit;
-            padding: 2.5rem 0;
+            padding: 1.5rem 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             transition: opacity 0.3s ease;
             cursor: pointer;
@@ -818,8 +795,8 @@
         }
 
         .product-image {
-            width: 280px;
-            min-width: 280px;
+            width: 200px;
+            min-width: 200px;
             aspect-ratio: 16 / 10;
             overflow: hidden;
             background-color: #e8e8e6;
@@ -838,24 +815,24 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 3rem;
+            padding: 0 2rem;
             min-width: 0;
         }
 
         .product-category {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #8C7E72;
             letter-spacing: 0.12em;
-            margin-top: 0.8rem;
+            margin-top: 0.5rem;
         }
 
         .product-title {
             font-family: 'Noto Serif JP', serif;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 500;
             line-height: 1.5;
             color: #2C2C2C;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
         }
 
         .product-price {
@@ -866,9 +843,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 60px;
+            width: 50px;
             flex-shrink: 0;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #8C7E72;
             transition: transform 0.3s ease;
         }
@@ -940,8 +917,6 @@
             <div class="preloader-circle"></div>
             <span class="preloader-loading-text">Loading...</span>
         </div>
-        <!-- 右下ブランド名 -->
-        <div class="preloader-brand">工藝 迎ふ</div>
     </div>
 
 
@@ -993,7 +968,7 @@
                 <span class="hero-nav-separator">/</span>
                 <a href="https://mukai6666.thebase.in/">商品一覧</a>
                 <span class="hero-nav-separator">/</span>
-                <a href="https://thebase.com/inquiry/mukai6666">お問い合わせ</a>
+                <a href="mailto:kogeimukau.2024@gmail.com">お問い合わせ</a>
             </div>
         </nav>
 
@@ -1018,23 +993,25 @@
     <!-- 動画から白背景への遷移オーバーレイ -->
     <div id="transition-overlay"></div>
 
-    <section id="craftsmanship-section" class="py-12 md:py-20 px-4 md:px-6">
+    <section id="craftsmanship-section" class="pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-6">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16">
             <div class="w-full md:w-1/2 h-[280px] md:h-[500px] fade-up overflow-hidden rounded-sm">
                 <img src="./pottery.JPG" alt="陶器焙煎機" class="w-full h-full object-cover">
             </div>
-            <div class="w-full md:w-1/2 fade-up">
-                <span class="text-xs tracking-widest text-brand-gray block mb-2 md:mb-4">CRAFTSMANSHIP</span>
-                <h3 class="font-serif text-xl md:text-3xl mb-4 md:mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
-                <p class="text-brand-gray leading-relaxed md:leading-loose mb-4 md:mb-8 text-xs md:text-sm">
-                    当店の焙煎は、一般的なガス火や電気式とは異なります。
-                    陶器製の焙煎機による熱伝達効果と、
-                    おが備長炭による炭火の遠赤外線効果。<br class="hidden md:block"><br class="hidden md:block">
-                    この二つを最大限に利用し、職人が豆の様子を見極めながら
-                    じっくりと時間をかけて焙煎しています。
+            <div class="w-full md:w-1/2 fade-up craftsmanship-content">
+                <span class="craftsmanship-line text-xs tracking-widest text-brand-gray block mb-2 md:mb-4">CRAFTSMANSHIP</span>
+                <h3 class="craftsmanship-line font-serif text-xl md:text-3xl mb-4 md:mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
+                <p class="craftsmanship-line font-serif text-brand-gray leading-relaxed md:leading-loose mb-4 md:mb-8 text-xs md:text-sm">
+                    当店の焙煎は、一般的なガス火や電気式とは異なります。<br>
+                    陶器製の焙煎機による熱伝達効果と、<br>
+                    おが備長炭による炭火の遠赤外線効果。
+                </p>
+                <p class="craftsmanship-line font-serif text-brand-gray leading-relaxed md:leading-loose mb-4 md:mb-8 text-xs md:text-sm">
+                    この二つを最大限に利用し、職人が豆の様子を見極めながら<br>
+                    じっくりと時間をかけて焙煎しています。<br>
                     量産はできませんが、一つひとつに心を込めて。
                 </p>
-                <a href="https://mukai6666.thebase.in/about" class="inline-block px-6 md:px-8 py-2 md:py-3 border border-brand-black text-xs tracking-widest hover:bg-brand-black hover:text-white transition">詳しく見る</a>
+                <a href="https://youtu.be/XnLsp7ugrRE" target="_blank" rel="noopener noreferrer" class="craftsmanship-line inline-block px-6 md:px-8 py-2 md:py-3 border border-brand-black text-xs tracking-widest hover:bg-brand-black hover:text-white transition">詳しく見る</a>
             </div>
         </div>
     </section>
@@ -1100,11 +1077,6 @@
                 </p>
             </div>
             <div class="flex gap-16 text-xs tracking-widest">
-                <ul class="space-y-4">
-                    <li><a href="https://mukai6666.thebase.in/" class="hover:opacity-50 transition">HOME</a></li>
-                    <li><a href="https://mukai6666.thebase.in/about" class="hover:opacity-50 transition">ABOUT</a></li>
-                    <li><a href="https://thebase.com/inquiry/mukai6666" class="hover:opacity-50 transition">CONTACT</a></li>
-                </ul>
                 <ul class="space-y-4 text-brand-gray">
                     <li><a href="https://mukai6666.thebase.in/privacy" class="hover:text-brand-black transition">プライバシーポリシー</a></li>
                     <li><a href="https://mukai6666.thebase.in/law" class="hover:text-brand-black transition">特定商取引法に基づく表記</a></li>
@@ -1154,13 +1126,6 @@
             }
         });
 
-        // ローディング画面の背景画像をランダムに設定
-        const loadingImages = ['./coffee.JPG', './焙煎機.JPG'];
-        const randomImage = loadingImages[Math.floor(Math.random() * loadingImages.length)];
-        const preloaderElement = document.getElementById('preloader');
-        if (preloaderElement) {
-            preloaderElement.style.backgroundImage = `url('${randomImage}')`;
-        }
 
         // GSAPとScrollTriggerを登録
         gsap.registerPlugin(ScrollTrigger);
@@ -1221,8 +1186,7 @@
             const heroNavigation = document.querySelector('.hero-navigation');
             const heroBgOverlay = document.querySelector('.hero-bg-overlay');
 
-            // ヒーローセクションの背景を即座に表示
-            gsap.set(heroSection, { visibility: 'visible' });
+            // ヒーローセクション内の背景オーバーレイを準備
             gsap.set(heroBgOverlay, { opacity: 1 });
 
             // 全体のマスタータイムライン
@@ -1241,56 +1205,63 @@
                 }
             });
 
-            // 1. プリローダーをフェードアウト（2秒後に開始、0.8秒かけて）
+            // === Step 1: ローディングレイヤーを非表示にする ===
+            // まずヒーローセクションを表示（ローディングの下で準備）
+            masterTL.to(heroSection, {
+                opacity: 1,
+                duration: 0.01
+            }, 1.8); // ローディングが消える少し前に準備
+
             masterTL.to(preloader, {
-                opacity: 0,
-                duration: 0.8,
+                autoAlpha: 0,
+                duration: 1.0,
                 ease: 'power2.inOut',
                 onComplete: () => {
                     preloader.style.display = 'none';
                 }
-            }, 2.0);
+            }, 2.0); // 2秒後に開始（動画読み込みを待つ）
 
-            // 2. 「工藝 迎ふ」を表示
-            masterTL.fromTo(heroBrand,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power3.out' },
-                2.3
-            );
-
-            // 3. 「陶器、」を表示
+            // === Step 2: メインビジュアルのテキストを順番に表示 ===
+            
+            // 2-1. 「陶器、」を表示（ローディング消失と食い気味に）
             masterTL.fromTo(heroTitleTop,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power3.out' },
-                2.3
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 1.8, ease: 'power2.out' },
+                '-=0.6' // 前のアニメーションより0.6秒早く開始
             );
 
-            // 4. 「焙煎」を表示（少し遅延）
+            // 2-2. 「焙煎」を表示（少し遅延）
             masterTL.fromTo(heroTitleBottom,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power3.out' },
-                2.6
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 1.8, ease: 'power2.out' },
+                '-=1.3' // 陶器、が0.5秒表示された後に開始
             );
 
-            // 5. サブコピーを表示
-            masterTL.fromTo(heroSubcopy,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
-                3.0
+            // 2-3. 「栃木県栃木市にて、陶器と炭火が紡ぐ珈琲。」を表示
+            // （中央配置のため、y: '-50%'を基準に30px下から開始）
+            gsap.set(heroSubcopy, { x: '-50%', y: 'calc(-50% + 30px)', opacity: 0 });
+            masterTL.to(heroSubcopy,
+                { y: '-50%', opacity: 1, duration: 1.8, ease: 'power2.out' },
+                '-=1.3' // 焙煎が0.5秒表示された後に開始
             );
 
-            // 6. YouTube動画をフェードイン
+            // 2-4. その他全て（工藝 迎ふ、YouTube動画、ナビゲーション）を同時に表示
+            masterTL.fromTo(heroBrand,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
+                '-=1.2' // サブコピーが0.6秒表示された後に開始
+            );
+
             masterTL.fromTo(heroMovieBox,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
-                3.0
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
+                '<' // 前のアニメーションと同時に開始
             );
 
-            // 7. ナビゲーションをフェードイン
             masterTL.fromTo(heroNavigation,
-                { opacity: 0, filter: 'blur(10px)' },
-                { opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power3.out' },
-                3.0
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
+                '<' // 前のアニメーションと同時に開始
             );
         });
 
@@ -1314,12 +1285,6 @@
             const heroDarkOverlay = document.querySelector('.hero-dark-overlay');
             const conceptOverlay = document.querySelector('.concept-overlay');
             const conceptSection = document.querySelector('#concept-section');
-
-            // サブコピーの初期位置を設定（中央配置：transform: translate(-50%, -50%)相当）
-            gsap.set(heroSubcopy, {
-                x: '-50%',
-                y: '-50%'
-            });
 
             // CRAFTSMANSHIPセクションを取得
             const craftsmanshipSection = document.getElementById('craftsmanship-section');
@@ -1462,19 +1427,20 @@
             // コンセプトオーバーレイが表示されたらテキストと画像のアニメーションを開始
             ScrollTrigger.create({
                 trigger: conceptSection,
-                start: 'top 60%',
+                start: 'top 50%',  // 画面中央でトリガー
                 onEnter: () => {
                     if (!conceptAnimationPlayed) {
                         conceptAnimationPlayed = true;
-                        // テキストのアニメーション
+                        // テキストのワイプアニメーション（左から右へ）
                         conceptLines.forEach((line, index) => {
-                            const delay = index * 0.4; // 各行0.4秒ずつ遅延
+                            const delay = index * 0.2; // 各行0.2秒ずつ遅延（stagger）
                             gsap.to(line, {
                                 opacity: 1,
-                                y: 0,
-                                duration: 1.0,
+                                x: 0,
+                                clipPath: 'inset(0 0% 0 0)', // 左から右へワイプ表示
+                                duration: 0.8,
                                 delay: delay,
-                                ease: 'power3.out'
+                                ease: 'power2.out'
                             });
                         });
                         // 画像のアニメーション（テキストと同時に開始）
@@ -1483,7 +1449,7 @@
                                 opacity: 1,
                                 y: 0,
                                 duration: 1.5,
-                                delay: 0.5,
+                                delay: 0.3,
                                 ease: 'power3.out'
                             });
                         }
@@ -1493,7 +1459,11 @@
                     // スクロールを戻した時にリセット
                     conceptAnimationPlayed = false;
                     conceptLines.forEach((line) => {
-                        gsap.set(line, { opacity: 0, y: 20 });
+                        gsap.set(line, { 
+                            opacity: 0, 
+                            x: -20,
+                            clipPath: 'inset(0 100% 0 0)'
+                        });
                     });
                     if (conceptImage) {
                         gsap.set(conceptImage, { opacity: 0, y: 20 });
@@ -1508,16 +1478,16 @@
             const lineupSection = document.getElementById('lineup-section');
             
             if (transitionOverlay && lineupSection) {
-                // Lineupセクションが近づくにつれて白いオーバーレイをフェードイン
+                // CRAFTSMANSHIPセクションの終わりからLineupセクションにかけて白くなる
                 gsap.to(transitionOverlay, {
                     opacity: 1,
                     scrollTrigger: {
-                        trigger: lineupSection,
-                        start: 'top 60%',       // Lineupセクションの上端が画面60%に達した時（遅め）
-                        end: 'top 10%',         // Lineupセクションの上端が画面10%に達した時
-                        scrub: 1.5,             // スクロールに同期（少し遅延）
+                        trigger: craftsmanshipSection,
+                        start: 'bottom 80%',    // CRAFTSMANSHIPセクションの下部が画面80%に来たら開始
+                        end: 'bottom 20%',      // CRAFTSMANSHIPセクションの下部が画面20%に来たら完了
+                        scrub: true,            // スクロールに完全同期
                         onLeave: () => {
-                            // Lineupセクションを過ぎたらオーバーレイを非表示
+                            // Lineupセクションに完全に入ったらオーバーレイを非表示
                             gsap.set(transitionOverlay, { opacity: 0 });
                         },
                         onEnterBack: () => {
@@ -1527,6 +1497,35 @@
                     }
                 });
             }
+
+            // ========================================
+            // Phase 2.8: CRAFTSMANSHIPセクションのワイプアニメーション
+            // ========================================
+            const craftsmanshipLines = document.querySelectorAll('.craftsmanship-line');
+            let craftsmanshipAnimationPlayed = false;
+
+            ScrollTrigger.create({
+                trigger: craftsmanshipSection,
+                start: 'top 50%',  // 画面中央でトリガー
+                onEnter: () => {
+                    if (!craftsmanshipAnimationPlayed) {
+                        craftsmanshipAnimationPlayed = true;
+                        // テキストのワイプアニメーション（左から右へ）
+                        craftsmanshipLines.forEach((line, index) => {
+                            const delay = index * 0.2; // 各行0.2秒ずつ遅延
+                            gsap.to(line, {
+                                opacity: 1,
+                                x: 0,
+                                clipPath: 'inset(0 0% 0 0)', // 左から右へワイプ表示
+                                duration: 0.8,
+                                delay: delay,
+                                ease: 'power2.out'
+                            });
+                        });
+                    }
+                }
+                // onLeaveBackを削除：一度表示されたら画面上にいる限り消えない
+            });
 
             // ========================================
             // Phase 3: その他の要素のアニメーション
