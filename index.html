@@ -968,7 +968,7 @@
                 <span class="hero-nav-separator">/</span>
                 <a href="https://mukai6666.thebase.in/">商品一覧</a>
                 <span class="hero-nav-separator">/</span>
-                <a href="mailto:kogeimukau.2024@gmail.com">お問い合わせ</a>
+                <a href="https://thebase.com/inquiry/mukai6666" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
             </div>
         </nav>
 
@@ -1067,7 +1067,7 @@
     </section>
 
     <footer class="bg-white py-10 md:py-16 px-4 md:px-6 border-t border-gray-100 text-brand-black">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
             <div>
                 <h5 class="font-serif text-xl mb-6 tracking-widest">工藝 迎ふ</h5>
                 <p class="text-xs text-brand-gray leading-loose">
@@ -1485,15 +1485,7 @@
                         trigger: craftsmanshipSection,
                         start: 'bottom 80%',    // CRAFTSMANSHIPセクションの下部が画面80%に来たら開始
                         end: 'bottom 20%',      // CRAFTSMANSHIPセクションの下部が画面20%に来たら完了
-                        scrub: true,            // スクロールに完全同期
-                        onLeave: () => {
-                            // Lineupセクションに完全に入ったらオーバーレイを非表示
-                            gsap.set(transitionOverlay, { opacity: 0 });
-                        },
-                        onEnterBack: () => {
-                            // スクロールを戻した時にオーバーレイを再表示
-                            gsap.set(transitionOverlay, { opacity: 1 });
-                        }
+                        scrub: true             // スクロールに完全同期（白くなったら維持）
                     }
                 });
             }
