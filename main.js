@@ -142,10 +142,10 @@
             );
 
             // 2-3. 「栃木県栃木市にて、陶器と炭火が紡ぐ珈琲。」を表示
-            // （中央配置のため、y: '-50%'を基準に30px下から開始）
-            gsap.set(heroSubcopy, { x: '-50%', y: 'calc(-50% + 30px)', opacity: 0 });
+            // （xPercent/yPercentで中央配置し、y:30で少し下にずらす）
+            gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 30, opacity: 0 });
             masterTL.to(heroSubcopy,
-                { y: '-50%', opacity: 1, duration: 1.8, ease: 'power2.out' },
+                { y: 0, opacity: 1, duration: 1.8, ease: 'power2.out' },
                 '-=1.3' // 焙煎が0.5秒表示された後に開始
             );
 
@@ -209,7 +209,8 @@
 
             // === タイムライン開始位置（0秒）で、すべての要素を表示状態に設定 ===
             scrollTL.set(heroSubcopy, {
-                y: '-50%',
+                yPercent: -50,
+                y: 0,
                 opacity: 1,
                 filter: 'blur(0px)'
             }, 0);
@@ -248,7 +249,7 @@
 
             // === Step A: サブコピーの先行移動 ===
             scrollTL.to(heroSubcopy, {
-                y: '-150%',
+                yPercent: -150,
                 opacity: 0,
                 filter: 'blur(12px)',
                 duration: 1.2,
