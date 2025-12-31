@@ -66,13 +66,24 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: #F5F5F3; /* 白に近い薄いグレー */
+            background-color: #1a1614;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             opacity: 1;
             visibility: visible;
+        }
+
+        .preloader::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(26, 22, 20, 0.5);
+            z-index: 1;
         }
 
         .preloader.hidden {
@@ -94,7 +105,7 @@
         .preloader-circle {
             width: 100px;
             height: 100px;
-            border: 1px solid rgba(44, 44, 44, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             position: relative;
         }
@@ -107,7 +118,7 @@
             width: 100px;
             height: 100px;
             border: 1px solid transparent;
-            border-top-color: rgba(44, 44, 44, 0.9);
+            border-top-color: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             animation: spinLoader 1.5s linear infinite;
         }
@@ -126,7 +137,7 @@
             font-size: 0.9rem;
             font-weight: 400;
             letter-spacing: 0.25em;
-            color: #2C2C2C;
+            color: rgba(255, 255, 255, 0.85);
         }
 
         /* レスポンシブ対応 */
@@ -729,6 +740,28 @@
             transform: translateX(-15px);
         }
 
+        /* Craftsmanshipセクションのスライドショー */
+        .craftsmanship-slider {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .craftsmanship-slider {
+                max-width: 100%;
+                margin: 0;
+            }
+        }
+
+        .craftsmanship-slider-inner {
+            position: relative;
+            width: 100%;
+        }
+
+        .craftsmanship-slide {
+            transition: opacity 1.5s ease-in-out;
+        }
+
         #craftsmanship-section a.border-brand-black {
             border-color: rgba(255, 255, 255, 0.8);
             color: #ffffff;
@@ -995,11 +1028,14 @@
 
     <section id="craftsmanship-section" class="pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-6">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16">
-            <div class="w-full md:w-1/2 h-[280px] md:h-[500px] fade-up overflow-hidden rounded-sm">
-                <img src="./pottery.JPG" alt="陶器焙煎機" class="w-full h-full object-cover">
+            <!-- スライドショー画像（正方形） -->
+            <div class="w-full md:w-1/2 fade-up overflow-hidden rounded-sm craftsmanship-slider">
+                <div class="craftsmanship-slider-inner aspect-square relative">
+                    <img src="./pottery.JPG" alt="陶器焙煎機" class="craftsmanship-slide absolute inset-0 w-full h-full object-cover opacity-100">
+                    <img src="./IMG_1854.jpg" alt="焙煎風景" class="craftsmanship-slide absolute inset-0 w-full h-full object-cover opacity-0">
+                </div>
             </div>
             <div class="w-full md:w-1/2 fade-up craftsmanship-content">
-                <span class="craftsmanship-line text-xs tracking-widest text-brand-gray block mb-2 md:mb-4">CRAFTSMANSHIP</span>
                 <h3 class="craftsmanship-line font-serif text-xl md:text-3xl mb-4 md:mb-8 leading-snug">素材と技による、<br>拘りの焙煎。</h3>
                 <p class="craftsmanship-line font-serif text-brand-gray leading-relaxed md:leading-loose mb-4 md:mb-8 text-xs md:text-sm">
                     当店の焙煎は、一般的なガス火や電気式とは異なります。<br>
@@ -1066,25 +1102,25 @@
         </div>
     </section>
 
-    <footer class="bg-white py-10 md:py-16 px-4 md:px-6 border-t border-gray-100 text-brand-black">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8 md:gap-12">
+    <footer class="bg-white py-6 md:py-10 px-4 md:px-6 border-t border-gray-100 text-brand-black">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start gap-6 md:gap-12">
             <div>
-                <h5 class="font-serif text-xl mb-6 tracking-widest">工藝 迎ふ</h5>
-                <p class="text-xs text-brand-gray leading-loose">
+                <h5 class="font-serif text-lg mb-3 tracking-widest">工藝 迎ふ</h5>
+                <p class="text-xs text-brand-gray leading-relaxed">
                     炭火焙煎珈琲<br>
-                    栃木県栃木市<br><br>
+                    栃木県栃木市<br>
                     ご注文はご予約にて承ります。
                 </p>
             </div>
-            <div class="flex gap-16 text-xs tracking-widest">
-                <ul class="space-y-4 text-brand-gray">
+            <div class="flex gap-12 text-xs tracking-widest">
+                <ul class="space-y-2 text-brand-gray">
                     <li><a href="https://mukai6666.thebase.in/privacy" class="hover:text-brand-black transition">プライバシーポリシー</a></li>
                     <li><a href="https://mukai6666.thebase.in/law" class="hover:text-brand-black transition">特定商取引法に基づく表記</a></li>
                     <li><a href="https://www.instagram.com/kogei_mukau/" class="hover:text-brand-black transition">Instagram</a></li>
                 </ul>
             </div>
         </div>
-        <div class="text-center text-[10px] text-gray-400 mt-24 tracking-widest">
+        <div class="text-center text-[10px] text-gray-400 mt-10 tracking-widest">
             &copy; 工藝 迎ふ (炭火焙煎珈琲)
         </div>
     </footer>
@@ -1126,6 +1162,14 @@
             }
         });
 
+
+        // ローディング画面の背景画像をランダムに設定
+        const loadingImages = ['./coffee.JPG', './焙煎機.JPG'];
+        const randomImage = loadingImages[Math.floor(Math.random() * loadingImages.length)];
+        const preloaderElement = document.getElementById('preloader');
+        if (preloaderElement) {
+            preloaderElement.style.backgroundImage = `url('${randomImage}')`;
+        }
 
         // GSAPとScrollTriggerを登録
         gsap.registerPlugin(ScrollTrigger);
@@ -1210,7 +1254,7 @@
             masterTL.to(heroSection, {
                 opacity: 1,
                 duration: 0.01
-            }, 1.8); // ローディングが消える少し前に準備
+            }, 2.5); // ローディングが消える少し前に準備
 
             masterTL.to(preloader, {
                 autoAlpha: 0,
@@ -1219,7 +1263,7 @@
                 onComplete: () => {
                     preloader.style.display = 'none';
                 }
-            }, 2.0); // 2秒後に開始（動画読み込みを待つ）
+            }, 2.8); // 2.8秒後に開始（動画読み込みを十分に待つ）
 
             // === Step 2: メインビジュアルのテキストを順番に表示 ===
             
@@ -1592,17 +1636,31 @@
             }
         });
 
-        // デバッグ: 商品コンテナの確認
-        window.addEventListener('load', function() {
-            const productList = document.getElementById('product-list');
-            console.log('📦 Product container check:', productList);
-            if (productList) {
-                console.log('📦 Container children:', productList.children.length);
-                console.log('📦 Container HTML:', productList.innerHTML.substring(0, 200));
-            } else {
-                console.error('❌ Product container NOT FOUND!');
+        // ========================================
+        // CRAFTSMANSHIPセクションのスライドショー
+        // ========================================
+        (function() {
+            const slides = document.querySelectorAll('.craftsmanship-slide');
+            if (slides.length < 2) return;
+
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+            const intervalTime = 4000; // 4秒ごとに切り替え
+
+            function showNextSlide() {
+                // 現在のスライドをフェードアウト
+                slides[currentSlide].style.opacity = '0';
+                
+                // 次のスライドに移動
+                currentSlide = (currentSlide + 1) % totalSlides;
+                
+                // 次のスライドをフェードイン
+                slides[currentSlide].style.opacity = '1';
             }
-        });
+
+            // スライドショーを開始
+            setInterval(showNextSlide, intervalTime);
+        })();
     </script>
 </body>
 </html>
