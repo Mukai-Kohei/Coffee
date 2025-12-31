@@ -7,6 +7,10 @@
             --overlay: linear-gradient(to bottom, rgba(26,22,20,0.3), rgba(26,22,20,0.7));
         }
 
+        body {
+            overflow-x: hidden;
+        }
+
         /* アニメーション中のスクロール禁止 */
         body.no-scroll {
             overflow: hidden;
@@ -623,6 +627,8 @@
             .concept-content {
                 padding: 0 4%;
                 max-width: 100%;
+                width: 100%;
+                text-align: center;
             }
 
 
