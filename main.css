@@ -8,12 +8,12 @@
         }
 
         html {
-            background-color: var(--bg-color, #1a1614);
+            background-color: black; /* オーバースクロール時の背景色を黒に設定 */
         }
 
         body {
             overflow-x: hidden;
-            background-color: #F5F5F3; /* Default light background */
+            background-color: #F5F5F3; /* デフォルトのライトな背景色 */
         }
 
         /* アニメーション中のスクロール禁止 */
@@ -141,8 +141,7 @@
 
         /* ヒーローセクション全体 */
         #hero-section {
-            position: sticky;
-            top: 0;
+            position: relative;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
