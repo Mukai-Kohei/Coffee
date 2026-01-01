@@ -309,7 +309,6 @@ import roasterImage from './roaster.jpg';
             // ========================================
             // Phase 2: スクロール連動アニメーション
             // ========================================
-            const heroOverlays = document.querySelector('#hero-overlays-container');
             const heroSection = document.querySelector('#hero-section');
             const heroBrand = document.querySelector('.hero-brand');
             const heroTitleTop = document.querySelector('.hero-title-top');
@@ -331,8 +330,6 @@ import roasterImage from './roaster.jpg';
                     start: 'top bottom',
                     endTrigger: craftsmanshipSection,
                     end: 'bottom top',
-                    pin: heroOverlays,
-                    pinSpacing: false,
                     scrub: 1,
                     // markers: true // デバッグ用
                 }

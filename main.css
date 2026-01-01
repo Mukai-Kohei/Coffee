@@ -141,16 +141,12 @@
 
         /* ヒーローセクション全体 */
         #hero-section {
-            position: relative;
+            position: sticky;
+            top: 0;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
             opacity: 0; /* ローディング中は非表示 */
-        }
-
-        #hero-overlays-container {
-            position: absolute;
-            inset: 0;
         }
 
         /* 背景動画コンテナ */
