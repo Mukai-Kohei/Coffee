@@ -30,6 +30,9 @@ import roasterImage from './roaster.jpg';
             preloaderElement.style.backgroundImage = `url('${randomImage}')`;
         }
 
+        // デバイスがタッチ操作主体かどうかの判定
+        const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
         // グローバル状態管理
         let isVideoReady = false;
         let videoReadyTimeout = null;
@@ -221,8 +224,11 @@ import roasterImage from './roaster.jpg';
                         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                         // ScrollTriggerを再度リフレッシュ
                         ScrollTrigger.refresh();
-                        // Lenisを初期化
-                        initLenis();
+                        // PC（タッチデバイスでない）場合のみLenisを初期化
+                        if (!isTouchDevice) {
+                            initLenis();
+                            console.log('✅ Lenis initialized for non-touch device');
+                        }
                     }
                 });
 
@@ -361,7 +367,7 @@ import roasterImage from './roaster.jpg';
             scrollTL.to(heroSubcopy, {
                 yPercent: -150,
                 opacity: 0,
-                filter: 'blur(12px)',
+                filter: isTouchDevice ? 'none' : 'blur(12px)',
                 duration: 1.2,
                 ease: 'power2.out'
             }, 0);
@@ -370,7 +376,7 @@ import roasterImage from './roaster.jpg';
             scrollTL.to(heroMovieBox, {
                 opacity: 0,
                 y: -60,
-                filter: 'blur(12px)',
+                filter: isTouchDevice ? 'none' : 'blur(12px)',
                 duration: 1.2,
                 ease: 'power2.out'
             }, 0);
@@ -379,7 +385,7 @@ import roasterImage from './roaster.jpg';
             scrollTL.to(heroNavigation, {
                 opacity: 0,
                 y: -30,
-                filter: 'blur(12px)',
+                filter: isTouchDevice ? 'none' : 'blur(12px)',
                 duration: 1.2,
                 ease: 'power2.out'
             }, 0);
@@ -394,7 +400,7 @@ import roasterImage from './roaster.jpg';
             // === Step B: メインタイトルの退場（早めに開始） ===
             scrollTL.to([heroBrand, heroTitleTop, heroTitleBottom], {
                 opacity: 0,
-                filter: 'blur(15px)',
+                filter: isTouchDevice ? 'none' : 'blur(15px)',
                 duration: 1.0,
                 ease: 'power2.in'
             }, 0.5);

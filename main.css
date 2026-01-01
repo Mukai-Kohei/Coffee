@@ -7,8 +7,13 @@
             --overlay: linear-gradient(to bottom, rgba(26,22,20,0.3), rgba(26,22,20,0.7));
         }
 
+        html {
+            background-color: var(--bg-color, #1a1614);
+        }
+
         body {
             overflow-x: hidden;
+            background-color: #F5F5F3; /* Default light background */
         }
 
         /* アニメーション中のスクロール禁止 */
