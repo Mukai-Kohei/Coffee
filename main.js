@@ -23,98 +23,78 @@
             preloaderElement.style.backgroundImage = `url('${randomImage}')`;
         }
 
-        // YouTube動画の準備完了を検出（バグ修正：動画読み込み待機）
+        // グローバル状態管理
         let isVideoReady = false;
         let videoReadyTimeout = null;
+        let hasInitialized = false;
 
-        // 動画を強制的に再読み込みする関数（キャッシュ回避）
-        function reloadVideo() {
-            const heroVideoIframe = document.querySelector('.hero-bg-video iframe');
-            if (heroVideoIframe) {
-                // 現在のsrcを取得
-                const currentSrc = heroVideoIframe.getAttribute('src');
-                const baseUrl = currentSrc.split('?')[0].split('#')[0];
+        // 動画を確実に初期化する関数（キャッシュ完全回避・リロード時も毎回実行）
+        function initializeVideo() {
+            console.log('🎬 Initializing video (fresh load)...');
 
-                // キャッシュバスターとしてタイムスタンプを追加
-                const timestamp = new Date().getTime();
-                const newSrc = `${baseUrl}?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1&t=${timestamp}`;
-
-                console.log('🔄 Reloading video with cache buster');
-
-                // srcを更新して動画を再読み込み
-                heroVideoIframe.src = newSrc;
-
-                return heroVideoIframe;
+            const heroVideoIframe = document.getElementById('hero-video-iframe');
+            if (!heroVideoIframe) {
+                console.log('⚠️ Video iframe not found');
+                isVideoReady = true;
+                return;
             }
-            return null;
-        }
 
-        // 動画の準備を開始
-        function initVideoLoad() {
-            isVideoReady = false;
+            // キャッシュを完全に回避するために毎回ユニークなパラメータを追加
+            const timestamp = new Date().getTime();
+            const randomParam = Math.random().toString(36).substring(7);
+            const sessionParam = Math.floor(Math.random() * 1000000);
+
+            // より多くのキャッシュバスター付きURL
+            const newSrc = `https://www.youtube.com/embed/EsEM4zzvE2k?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&disablekb=1&fs=0&iv_load_policy=3&version=3&nocache=${timestamp}&rand=${randomParam}&session=${sessionParam}`;
+
+            console.log('🔄 Setting fresh video src');
 
             // 既存のタイムアウトをクリア
             if (videoReadyTimeout) {
                 clearTimeout(videoReadyTimeout);
             }
 
-            // 最大待機時間（3.5秒）のフォールバック
-            const maxWaitTime = 3500;
+            // リセット
+            isVideoReady = false;
+
+            // 最大待機時間（2秒）のフォールバック
             videoReadyTimeout = setTimeout(() => {
                 console.log('⚠️ Video load timeout - proceeding anyway');
                 isVideoReady = true;
-            }, maxWaitTime);
+            }, 2000);
 
-            // iframe要素を取得（または再読み込み）してload eventを監視
-            const heroVideoIframe = reloadVideo();
-            if (heroVideoIframe) {
-                // 既存のリスナーを削除（重複防止）
-                heroVideoIframe.removeEventListener('load', onVideoLoad);
-                heroVideoIframe.addEventListener('load', onVideoLoad);
-            } else {
-                // iframeが見つからない場合は即座に準備完了扱い
-                console.log('⚠️ Video iframe not found');
+            // 古いイベントリスナーをクリーンアップ
+            const oldOnLoad = heroVideoIframe.onload;
+            const oldOnError = heroVideoIframe.onerror;
+
+            // loadイベントハンドラ
+            heroVideoIframe.onload = () => {
+                console.log('✅ Video iframe loaded successfully');
                 clearTimeout(videoReadyTimeout);
                 isVideoReady = true;
-            }
+            };
+
+            // エラーハンドラ
+            heroVideoIframe.onerror = () => {
+                console.log('⚠️ Video iframe load error - continuing anyway');
+                clearTimeout(videoReadyTimeout);
+                isVideoReady = true;
+            };
+
+            // srcを直接設定（これにより確実に再読み込みが発生）
+            heroVideoIframe.src = newSrc;
         }
 
-        function onVideoLoad() {
-            console.log('✅ Video iframe loaded');
-            clearTimeout(videoReadyTimeout);
-            isVideoReady = true;
+        // DOMContentLoaded時に初期化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('📄 DOMContentLoaded');
+                initializeVideo();
+            });
+        } else {
+            console.log('📄 DOM already ready');
+            initializeVideo();
         }
-
-        // 初回読み込み
-        initVideoLoad();
-
-        // ページ表示時（bfcache対策・リロード対策）
-        window.addEventListener('pageshow', function(event) {
-            console.log('📄 Page show event - persisted:', event.persisted);
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-
-            // bfcacheから戻った場合、または通常のリロードの場合も動画を再読み込み
-            if (event.persisted || performance.navigation.type === 1) {
-                console.log('🔄 Reloading video due to page restore/reload');
-
-                // プリローダーを再表示
-                const preloader = document.getElementById('preloader');
-                if (preloader) {
-                    preloader.style.display = 'flex';
-                    preloader.style.opacity = '1';
-                    preloader.style.visibility = 'visible';
-                }
-
-                // ヒーローセクションを非表示
-                const heroSection = document.querySelector('#hero-section');
-                if (heroSection) {
-                    heroSection.style.opacity = '0';
-                }
-
-                // 動画を再読み込み
-                initVideoLoad();
-            }
-        });
 
         // GSAPとScrollTriggerを登録
         gsap.registerPlugin(ScrollTrigger);
@@ -151,6 +131,15 @@
 
         // ページ読み込み時に実行
         window.addEventListener('load', () => {
+            // 既に初期化済みの場合はスキップ（重複実行防止）
+            if (hasInitialized) {
+                console.log('⚠️ Already initialized, skipping...');
+                return;
+            }
+            hasInitialized = true;
+
+            console.log('🚀 Page load event triggered');
+
             // アニメーション中はスクロールを禁止
             document.body.classList.add('no-scroll');
 
@@ -163,18 +152,28 @@
             ScrollTrigger.refresh();
 
             // 動画の準備完了を待つ（バグ修正：確実に動画を表示）
+            let checkCount = 0;
+            const maxChecks = 50; // 最大5秒（100ms × 50）
+
             const waitForVideo = () => {
+                checkCount++;
+
                 if (isVideoReady) {
+                    console.log('✅ Video ready, starting hero animation');
+                    startHeroAnimation();
+                } else if (checkCount >= maxChecks) {
+                    console.log('⚠️ Max wait time reached, forcing start');
+                    isVideoReady = true;
                     startHeroAnimation();
                 } else {
-                    requestAnimationFrame(waitForVideo);
+                    setTimeout(waitForVideo, 100);
                 }
             };
 
-            // 最低表示時間（1.5秒）を確保してから動画チェック開始
+            // 最低表示時間（1.2秒）を確保してから動画チェック開始
             setTimeout(() => {
                 waitForVideo();
-            }, 1500);
+            }, 1200);
 
             function startHeroAnimation() {
                 // ========================================
