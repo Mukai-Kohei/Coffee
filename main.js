@@ -1,19 +1,26 @@
 
-        console.log('✅ Main script starting...');
-        // リロード時にTOPから表示（複数の方法で確実に）
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
+        // =============================================
+        // 最優先: スクロール位置を強制的にトップにリセット
+        // =============================================
+        (function forceScrollToTop() {
+            // History APIでブラウザのスクロール復元を無効化
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
 
-        // 即座にスクロール位置をリセット
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-
-        // ページ表示時にもスクロール位置をリセット
-        window.addEventListener('beforeunload', function() {
+            // 即座にスクロール位置をリセット（複数の方法で確実に）
             window.scrollTo(0, 0);
-        });
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            // スタイルでも強制
+            document.documentElement.style.scrollBehavior = 'auto';
+
+            console.log('✅ Scroll position reset to top');
+        })();
+
+        console.log('✅ Main script starting...');
 
         // ローディング画面の背景画像をランダムに設定
         const loadingImages = ['./coffee.JPG', './焙煎機.JPG'];
@@ -85,22 +92,54 @@
             heroVideoIframe.src = newSrc;
         }
 
-        // DOMContentLoaded時に初期化
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('📄 DOMContentLoaded');
-                initializeVideo();
-            });
-        } else {
+        // =============================================
+        // 複数のタイミングでスクロールリセットを確実に実行
+        // =============================================
+
+        // DOMContentLoaded時
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 DOMContentLoaded - resetting scroll');
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            initializeVideo();
+        });
+
+        // pageshow時（bfcache・リロード対策）
+        window.addEventListener('pageshow', (event) => {
+            console.log('📄 pageshow - persisted:', event.persisted);
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            // bfcacheから復帰した場合は完全にリセット
+            if (event.persisted) {
+                console.log('🔄 Restoring from bfcache - full reset');
+                location.reload();
+            }
+        });
+
+        // 念のため即座に初期化（既にDOMが準備できている場合）
+        if (document.readyState !== 'loading') {
             console.log('📄 DOM already ready');
             initializeVideo();
         }
 
-        // GSAPとScrollTriggerを登録
+        // =============================================
+        // GSAPとScrollTriggerの初期化
+        // =============================================
         gsap.registerPlugin(ScrollTrigger);
-        
-        // ScrollTriggerの初期化時にスクロール位置をリセット
-        ScrollTrigger.config({ ignoreMobileResize: true });
+
+        // ScrollTriggerのグローバル設定
+        ScrollTrigger.config({
+            ignoreMobileResize: true,
+            autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load'
+        });
+
+        // 既存のScrollTriggerインスタンスをすべてクリア（リロード時の残骸対策）
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+        console.log('✅ ScrollTrigger initialized and cleared');
 
         // ========================================
         // Lenis (慣性スクロール) の初期化
@@ -144,12 +183,20 @@
             document.body.classList.add('no-scroll');
 
             // TOPから確実にスタート（複数回実行で確実に）
+            window.scrollTo(0, 0);
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
 
-            // ScrollTriggerをリフレッシュしてスクロール位置を確定
-            ScrollTrigger.refresh();
+            // ScrollTriggerを完全にリセットしてから再計算
+            console.log('🔄 Killing all ScrollTrigger instances');
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+            // 少し待ってからrefresh（DOM安定化のため）
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+                console.log('✅ ScrollTrigger refreshed');
+            }, 100);
 
             // 動画の準備完了を待つ（バグ修正：確実に動画を表示）
             let checkCount = 0;
@@ -195,18 +242,32 @@
                 // 全体のマスタータイムライン
                 const masterTL = gsap.timeline({
                     onComplete: () => {
+                        console.log('✅ Master timeline complete - finalizing');
+
                         // すべてのアニメーション完了後、スクロールを許可
                         document.body.classList.remove('no-scroll');
+
                         // 背景色をブランドライトに変更
                         document.body.style.backgroundColor = '#F5F5F3';
+
                         // 最終的な中央揃えを強制（レースコンディション対策）
                         gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 0 });
-                        // スクロール位置を再度リセット
+
+                        // スクロール位置を最終確認
+                        window.scrollTo(0, 0);
                         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                        // ScrollTriggerを再度リフレッシュ
-                        ScrollTrigger.refresh();
-                        // Lenisを初期化
-                        initLenis();
+                        document.documentElement.scrollTop = 0;
+                        document.body.scrollTop = 0;
+
+                        // ScrollTriggerを再度完全にリフレッシュ（最終調整）
+                        setTimeout(() => {
+                            ScrollTrigger.refresh(true); // 強制的に完全リフレッシュ
+                            console.log('✅ Final ScrollTrigger refresh complete');
+
+                            // Lenisを初期化
+                            initLenis();
+                            console.log('✅ Lenis initialized');
+                        }, 200);
                     }
                 });
 
@@ -273,10 +334,59 @@
 
         // DOMContentLoadedでScrollTriggerなどを設定
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎯 DOMContentLoaded - Setting up animations');
+
             // TOPから確実にスタート
+            window.scrollTo(0, 0);
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
+
+            // =============================================
+            // アニメーション要素の初期状態を確実に設定
+            // =============================================
+            const conceptLines = document.querySelectorAll('.concept-line');
+            const craftsmanshipLines = document.querySelectorAll('.craftsmanship-line');
+
+            // concept-lineの初期状態を設定
+            if (conceptLines.length > 0) {
+                conceptLines.forEach(line => {
+                    gsap.set(line, {
+                        opacity: 0,
+                        x: -20,
+                        clipPath: 'inset(0 100% 0 0)'
+                    });
+                });
+                console.log(`✅ Set initial state for ${conceptLines.length} concept lines`);
+            }
+
+            // craftsmanship-lineの初期状態を設定
+            if (craftsmanshipLines.length > 0) {
+                craftsmanshipLines.forEach(line => {
+                    gsap.set(line, {
+                        opacity: 0,
+                        x: -15,
+                        clipPath: 'inset(0 100% 0 0)'
+                    });
+                });
+                console.log(`✅ Set initial state for ${craftsmanshipLines.length} craftsmanship lines`);
+            }
+
+            // fade-up要素の初期状態を設定
+            const fadeUpElements = document.querySelectorAll('.fade-up');
+            if (fadeUpElements.length > 0) {
+                fadeUpElements.forEach(element => {
+                    gsap.set(element, { opacity: 0, y: 40 });
+                });
+                console.log(`✅ Set initial state for ${fadeUpElements.length} fade-up elements`);
+            }
+
+            // lineup-header要素の初期状態を設定
+            const lineupHeader = document.querySelector('.lineup-header');
+            if (lineupHeader) {
+                gsap.set(lineupHeader, { opacity: 0, y: 30 });
+                console.log('✅ Set initial state for lineup header');
+            }
 
             // ========================================
             // Phase 2: スクロール連動アニメーション
@@ -436,6 +546,7 @@
                 start: 'top 80%',  // より早めにトリガー（バグ修正）
                 onEnter: () => {
                     if (!conceptAnimationPlayed) {
+                        console.log('🎬 Concept animation triggered');
                         conceptAnimationPlayed = true;
                         // テキストのワイプアニメーション（左から右へ）
                         conceptLines.forEach((line, index) => {
@@ -449,7 +560,6 @@
                                 ease: 'power2.out'
                             });
                         });
-
                     }
                 },
                 onLeaveBack: () => {
@@ -462,17 +572,29 @@
                             clipPath: 'inset(0 100% 0 0)'
                         });
                     });
-
                 },
-                // バグ修正：ページロード時にすでに表示領域にある場合も対応
+                // バグ修正：ページロード時・リロード時にすでに表示領域にある場合も対応
                 onRefresh: (self) => {
+                    console.log('🔄 Concept ScrollTrigger refresh - progress:', self.progress);
+                    // スクロール位置が既にトリガーを過ぎている場合は即座に表示
                     if (self.progress > 0 && !conceptAnimationPlayed) {
+                        console.log('⚡ Fast-forwarding concept animation');
                         conceptAnimationPlayed = true;
                         conceptLines.forEach((line) => {
                             gsap.set(line, {
                                 opacity: 1,
                                 x: 0,
                                 clipPath: 'inset(0 0% 0 0)'
+                            });
+                        });
+                    }
+                    // トリガー位置より前にいる場合は確実に初期状態に
+                    else if (self.progress === 0 && !conceptAnimationPlayed) {
+                        conceptLines.forEach((line) => {
+                            gsap.set(line, {
+                                opacity: 0,
+                                x: -20,
+                                clipPath: 'inset(0 100% 0 0)'
                             });
                         });
                     }
@@ -509,6 +631,7 @@
                 start: 'top 80%',  // より早めにトリガー（バグ修正）
                 onEnter: () => {
                     if (!craftsmanshipAnimationPlayed) {
+                        console.log('🎬 Craftsmanship animation triggered');
                         craftsmanshipAnimationPlayed = true;
                         // テキストのワイプアニメーション（左から右へ）
                         craftsmanshipLines.forEach((line, index) => {
@@ -524,15 +647,28 @@
                         });
                     }
                 },
-                // バグ修正：ページロード時にすでに表示領域にある場合も対応
+                // バグ修正：ページロード時・リロード時にすでに表示領域にある場合も対応
                 onRefresh: (self) => {
+                    console.log('🔄 Craftsmanship ScrollTrigger refresh - progress:', self.progress);
+                    // スクロール位置が既にトリガーを過ぎている場合は即座に表示
                     if (self.progress > 0 && !craftsmanshipAnimationPlayed) {
+                        console.log('⚡ Fast-forwarding craftsmanship animation');
                         craftsmanshipAnimationPlayed = true;
                         craftsmanshipLines.forEach((line) => {
                             gsap.set(line, {
                                 opacity: 1,
                                 x: 0,
                                 clipPath: 'inset(0 0% 0 0)'
+                            });
+                        });
+                    }
+                    // トリガー位置より前にいる場合は確実に初期状態に
+                    else if (self.progress === 0 && !craftsmanshipAnimationPlayed) {
+                        craftsmanshipLines.forEach((line) => {
+                            gsap.set(line, {
+                                opacity: 0,
+                                x: -15,
+                                clipPath: 'inset(0 100% 0 0)'
                             });
                         });
                     }
