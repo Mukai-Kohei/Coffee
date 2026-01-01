@@ -1,3 +1,8 @@
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from '@studio-freight/lenis';
+import './config.js';
+import './products.js';
 
         console.log('✅ Main script starting...');
         // リロード時にTOPから表示（複数の方法で確実に）
@@ -16,7 +21,7 @@
         });
 
         // ローディング画面の背景画像をランダムに設定
-        const loadingImages = ['./coffee.JPG', './焙煎機.JPG'];
+        const loadingImages = ['./coffee.JPG', './roaster.jpg'];
         const randomImage = loadingImages[Math.floor(Math.random() * loadingImages.length)];
         const preloaderElement = document.getElementById('preloader');
         if (preloaderElement) {
