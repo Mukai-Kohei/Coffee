@@ -205,6 +205,9 @@ import roasterImage from './roaster.jpg';
                 // ヒーローセクション内の背景オーバーレイを準備
                 gsap.set(heroBgOverlay, { opacity: 1 });
 
+                // Make the hero section visible underneath the preloader
+                gsap.set(heroSection, { opacity: 1 });
+
                 // 全体のマスタータイムライン
                 const masterTL = gsap.timeline({
                     onComplete: () => {
@@ -224,12 +227,6 @@ import roasterImage from './roaster.jpg';
                 });
 
                 // === Step 1: ローディングレイヤーを非表示にする ===
-                // まずヒーローセクションを表示（ローディングの下で準備）
-                masterTL.to(heroSection, {
-                    opacity: 1,
-                    duration: 0.01
-                }, 0.3); // 即座に準備
-
                 masterTL.to(preloader, {
                     autoAlpha: 0,
                     duration: 1.0,
