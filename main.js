@@ -15,14 +15,6 @@
             window.scrollTo(0, 0);
         });
 
-        // ページ表示時（bfcache対策）
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-            }
-        });
-
-
         // ローディング画面の背景画像をランダムに設定
         const loadingImages = ['./coffee.JPG', './焙煎機.JPG'];
         const randomImage = loadingImages[Math.floor(Math.random() * loadingImages.length)];
@@ -33,29 +25,96 @@
 
         // YouTube動画の準備完了を検出（バグ修正：動画読み込み待機）
         let isVideoReady = false;
-        let videoReadyTimer = null;
+        let videoReadyTimeout = null;
 
-        // 最大待機時間（3.5秒）のフォールバック
-        const maxWaitTime = 3500;
-        const videoReadyTimeout = setTimeout(() => {
-            console.log('⚠️ Video load timeout - proceeding anyway');
-            isVideoReady = true;
-        }, maxWaitTime);
+        // 動画を強制的に再読み込みする関数（キャッシュ回避）
+        function reloadVideo() {
+            const heroVideoIframe = document.querySelector('.hero-bg-video iframe');
+            if (heroVideoIframe) {
+                // 現在のsrcを取得
+                const currentSrc = heroVideoIframe.getAttribute('src');
+                const baseUrl = currentSrc.split('?')[0].split('#')[0];
 
-        // iframe要素を取得してload eventを監視
-        const heroVideoIframe = document.querySelector('.hero-bg-video iframe');
-        if (heroVideoIframe) {
-            heroVideoIframe.addEventListener('load', () => {
-                console.log('✅ Video iframe loaded');
+                // キャッシュバスターとしてタイムスタンプを追加
+                const timestamp = new Date().getTime();
+                const newSrc = `${baseUrl}?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1&t=${timestamp}`;
+
+                console.log('🔄 Reloading video with cache buster');
+
+                // srcを更新して動画を再読み込み
+                heroVideoIframe.src = newSrc;
+
+                return heroVideoIframe;
+            }
+            return null;
+        }
+
+        // 動画の準備を開始
+        function initVideoLoad() {
+            isVideoReady = false;
+
+            // 既存のタイムアウトをクリア
+            if (videoReadyTimeout) {
+                clearTimeout(videoReadyTimeout);
+            }
+
+            // 最大待機時間（3.5秒）のフォールバック
+            const maxWaitTime = 3500;
+            videoReadyTimeout = setTimeout(() => {
+                console.log('⚠️ Video load timeout - proceeding anyway');
+                isVideoReady = true;
+            }, maxWaitTime);
+
+            // iframe要素を取得（または再読み込み）してload eventを監視
+            const heroVideoIframe = reloadVideo();
+            if (heroVideoIframe) {
+                // 既存のリスナーを削除（重複防止）
+                heroVideoIframe.removeEventListener('load', onVideoLoad);
+                heroVideoIframe.addEventListener('load', onVideoLoad);
+            } else {
+                // iframeが見つからない場合は即座に準備完了扱い
+                console.log('⚠️ Video iframe not found');
                 clearTimeout(videoReadyTimeout);
                 isVideoReady = true;
-            });
-        } else {
-            // iframeが見つからない場合は即座に準備完了扱い
-            console.log('⚠️ Video iframe not found');
+            }
+        }
+
+        function onVideoLoad() {
+            console.log('✅ Video iframe loaded');
             clearTimeout(videoReadyTimeout);
             isVideoReady = true;
         }
+
+        // 初回読み込み
+        initVideoLoad();
+
+        // ページ表示時（bfcache対策・リロード対策）
+        window.addEventListener('pageshow', function(event) {
+            console.log('📄 Page show event - persisted:', event.persisted);
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+            // bfcacheから戻った場合、または通常のリロードの場合も動画を再読み込み
+            if (event.persisted || performance.navigation.type === 1) {
+                console.log('🔄 Reloading video due to page restore/reload');
+
+                // プリローダーを再表示
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.display = 'flex';
+                    preloader.style.opacity = '1';
+                    preloader.style.visibility = 'visible';
+                }
+
+                // ヒーローセクションを非表示
+                const heroSection = document.querySelector('#hero-section');
+                if (heroSection) {
+                    heroSection.style.opacity = '0';
+                }
+
+                // 動画を再読み込み
+                initVideoLoad();
+            }
+        });
 
         // GSAPとScrollTriggerを登録
         gsap.registerPlugin(ScrollTrigger);
