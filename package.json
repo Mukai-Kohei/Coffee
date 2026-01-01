@@ -1,0 +1,18 @@
+{
+    "name": "coffee",
+    "version": "1.0.0",
+    "main": "main.js",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "type": "module",
+    "devDependencies": {
+        "vite": "^6.0.0"
+    },
+    "dependencies": {
+        "@studio-freight/lenis": "^1.0.42",
+        "gsap": "^3.14.2"
+    }
+}
