@@ -3,6 +3,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from '@studio-freight/lenis';
 import './config.js';
 import './products.js';
+import coffeeImage from './coffee.JPG';
+import roasterImage from './roaster.jpg';
 
         console.log('✅ Main script starting...');
         // リロード時にTOPから表示（複数の方法で確実に）
@@ -21,7 +23,7 @@ import './products.js';
         });
 
         // ローディング画面の背景画像をランダムに設定
-        const loadingImages = ['./coffee.JPG', './roaster.jpg'];
+        const loadingImages = [coffeeImage, roasterImage];
         const randomImage = loadingImages[Math.floor(Math.random() * loadingImages.length)];
         const preloaderElement = document.getElementById('preloader');
         if (preloaderElement) {
@@ -32,9 +34,15 @@ import './products.js';
         let isVideoReady = false;
         let videoReadyTimeout = null;
         let hasInitialized = false;
+        let hasVideoInitialized = false; // Guard flag for video initialization
 
         // 動画を確実に初期化する関数（キャッシュ完全回避・リロード時も毎回実行）
         function initializeVideo() {
+            if (hasVideoInitialized) {
+                console.log('🚫 Video already initialized. Skipping.');
+                return;
+            }
+            hasVideoInitialized = true;
             console.log('🎬 Initializing video (fresh load)...');
 
             const heroVideoIframe = document.getElementById('hero-video-iframe');
