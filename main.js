@@ -312,8 +312,6 @@ import roasterImage from './roaster.jpg';
                     start: 'top bottom',
                     endTrigger: craftsmanshipSection,
                     end: 'bottom top',
-                    pin: heroSection,
-                    pinSpacing: false,
                     scrub: 1,
                     // markers: true // デバッグ用
                 }
