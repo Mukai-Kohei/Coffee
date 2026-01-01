@@ -148,6 +148,11 @@
             opacity: 0; /* ローディング中は非表示 */
         }
 
+        #hero-overlays-container {
+            position: absolute;
+            inset: 0;
+        }
+
         /* 背景動画コンテナ */
         .hero-bg-video {
             position: absolute;
