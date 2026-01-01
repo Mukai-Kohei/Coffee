@@ -4,7 +4,7 @@
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
-        
+
         // 即座にスクロール位置をリセット
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         document.documentElement.scrollTop = 0;
@@ -29,6 +29,32 @@
         const preloaderElement = document.getElementById('preloader');
         if (preloaderElement) {
             preloaderElement.style.backgroundImage = `url('${randomImage}')`;
+        }
+
+        // YouTube動画の準備完了を検出（バグ修正：動画読み込み待機）
+        let isVideoReady = false;
+        let videoReadyTimer = null;
+
+        // 最大待機時間（3.5秒）のフォールバック
+        const maxWaitTime = 3500;
+        const videoReadyTimeout = setTimeout(() => {
+            console.log('⚠️ Video load timeout - proceeding anyway');
+            isVideoReady = true;
+        }, maxWaitTime);
+
+        // iframe要素を取得してload eventを監視
+        const heroVideoIframe = document.querySelector('.hero-bg-video iframe');
+        if (heroVideoIframe) {
+            heroVideoIframe.addEventListener('load', () => {
+                console.log('✅ Video iframe loaded');
+                clearTimeout(videoReadyTimeout);
+                isVideoReady = true;
+            });
+        } else {
+            // iframeが見つからない場合は即座に準備完了扱い
+            console.log('⚠️ Video iframe not found');
+            clearTimeout(videoReadyTimeout);
+            isVideoReady = true;
         }
 
         // GSAPとScrollTriggerを登録
@@ -73,59 +99,74 @@
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
-            
+
             // ScrollTriggerをリフレッシュしてスクロール位置を確定
             ScrollTrigger.refresh();
 
-            // ========================================
-            // Phase 0: プリローダー → ヒーロー（シンプルな流れ）
-            // ========================================
-            const preloader = document.getElementById('preloader');
-            const heroSection = document.querySelector('#hero-section');
-            const heroBrand = document.querySelector('.hero-brand');
-            const heroTitleTop = document.querySelector('.hero-title-top');
-            const heroTitleBottom = document.querySelector('.hero-title-bottom');
-            const heroSubcopy = document.querySelector('.hero-subcopy');
-            const heroMovieBox = document.querySelector('.hero-movie-box');
-            const heroNavigation = document.querySelector('.hero-navigation');
-            const heroBgOverlay = document.querySelector('.hero-bg-overlay');
-
-            // ヒーローセクション内の背景オーバーレイを準備
-            gsap.set(heroBgOverlay, { opacity: 1 });
-
-            // 全体のマスタータイムライン
-            const masterTL = gsap.timeline({
-                onComplete: () => {
-                    // すべてのアニメーション完了後、スクロールを許可
-                    document.body.classList.remove('no-scroll');
-                    // 背景色をブランドライトに変更
-                    document.body.style.backgroundColor = '#F5F5F3';
-                    // 最終的な中央揃えを強制（レースコンディション対策）
-                    gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 0 });
-                    // スクロール位置を再度リセット
-                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                    // ScrollTriggerを再度リフレッシュ
-                    ScrollTrigger.refresh();
-                    // Lenisを初期化
-                    initLenis();
+            // 動画の準備完了を待つ（バグ修正：確実に動画を表示）
+            const waitForVideo = () => {
+                if (isVideoReady) {
+                    startHeroAnimation();
+                } else {
+                    requestAnimationFrame(waitForVideo);
                 }
-            });
+            };
 
-            // === Step 1: ローディングレイヤーを非表示にする ===
-            // まずヒーローセクションを表示（ローディングの下で準備）
-            masterTL.to(heroSection, {
-                opacity: 1,
-                duration: 0.01
-            }, 2.5); // ローディングが消える少し前に準備
+            // 最低表示時間（1.5秒）を確保してから動画チェック開始
+            setTimeout(() => {
+                waitForVideo();
+            }, 1500);
 
-            masterTL.to(preloader, {
-                autoAlpha: 0,
-                duration: 1.0,
-                ease: 'power2.inOut',
-                onComplete: () => {
-                    preloader.style.display = 'none';
-                }
-            }, 2.8); // 2.8秒後に開始（動画読み込みを十分に待つ）
+            function startHeroAnimation() {
+                // ========================================
+                // Phase 0: プリローダー → ヒーロー（シンプルな流れ）
+                // ========================================
+                const preloader = document.getElementById('preloader');
+                const heroSection = document.querySelector('#hero-section');
+                const heroBrand = document.querySelector('.hero-brand');
+                const heroTitleTop = document.querySelector('.hero-title-top');
+                const heroTitleBottom = document.querySelector('.hero-title-bottom');
+                const heroSubcopy = document.querySelector('.hero-subcopy');
+                const heroMovieBox = document.querySelector('.hero-movie-box');
+                const heroNavigation = document.querySelector('.hero-navigation');
+                const heroBgOverlay = document.querySelector('.hero-bg-overlay');
+
+                // ヒーローセクション内の背景オーバーレイを準備
+                gsap.set(heroBgOverlay, { opacity: 1 });
+
+                // 全体のマスタータイムライン
+                const masterTL = gsap.timeline({
+                    onComplete: () => {
+                        // すべてのアニメーション完了後、スクロールを許可
+                        document.body.classList.remove('no-scroll');
+                        // 背景色をブランドライトに変更
+                        document.body.style.backgroundColor = '#F5F5F3';
+                        // 最終的な中央揃えを強制（レースコンディション対策）
+                        gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 0 });
+                        // スクロール位置を再度リセット
+                        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                        // ScrollTriggerを再度リフレッシュ
+                        ScrollTrigger.refresh();
+                        // Lenisを初期化
+                        initLenis();
+                    }
+                });
+
+                // === Step 1: ローディングレイヤーを非表示にする ===
+                // まずヒーローセクションを表示（ローディングの下で準備）
+                masterTL.to(heroSection, {
+                    opacity: 1,
+                    duration: 0.01
+                }, 0.3); // 即座に準備
+
+                masterTL.to(preloader, {
+                    autoAlpha: 0,
+                    duration: 1.0,
+                    ease: 'power2.inOut',
+                    onComplete: () => {
+                        preloader.style.display = 'none';
+                    }
+                }, 0.5); // 0.5秒後に開始（動画準備完了済み）
 
             // === Step 2: メインビジュアルのテキストを順番に表示 ===
             
@@ -333,7 +374,7 @@
             // コンセプトオーバーレイが表示されたらテキストと画像のアニメーションを開始
             ScrollTrigger.create({
                 trigger: conceptSection,
-                start: 'top 50%',  // 画面中央でトリガー
+                start: 'top 80%',  // より早めにトリガー（バグ修正）
                 onEnter: () => {
                     if (!conceptAnimationPlayed) {
                         conceptAnimationPlayed = true;
@@ -356,13 +397,26 @@
                     // スクロールを戻した時にリセット
                     conceptAnimationPlayed = false;
                     conceptLines.forEach((line) => {
-                        gsap.set(line, { 
-                            opacity: 0, 
+                        gsap.set(line, {
+                            opacity: 0,
                             x: -20,
                             clipPath: 'inset(0 100% 0 0)'
                         });
                     });
 
+                },
+                // バグ修正：ページロード時にすでに表示領域にある場合も対応
+                onRefresh: (self) => {
+                    if (self.progress > 0 && !conceptAnimationPlayed) {
+                        conceptAnimationPlayed = true;
+                        conceptLines.forEach((line) => {
+                            gsap.set(line, {
+                                opacity: 1,
+                                x: 0,
+                                clipPath: 'inset(0 0% 0 0)'
+                            });
+                        });
+                    }
                 }
             });
 
@@ -393,7 +447,7 @@
 
             ScrollTrigger.create({
                 trigger: craftsmanshipSection,
-                start: 'top 50%',  // 画面中央でトリガー
+                start: 'top 80%',  // より早めにトリガー（バグ修正）
                 onEnter: () => {
                     if (!craftsmanshipAnimationPlayed) {
                         craftsmanshipAnimationPlayed = true;
@@ -407,6 +461,19 @@
                                 duration: 0.8,
                                 delay: delay,
                                 ease: 'power2.out'
+                            });
+                        });
+                    }
+                },
+                // バグ修正：ページロード時にすでに表示領域にある場合も対応
+                onRefresh: (self) => {
+                    if (self.progress > 0 && !craftsmanshipAnimationPlayed) {
+                        craftsmanshipAnimationPlayed = true;
+                        craftsmanshipLines.forEach((line) => {
+                            gsap.set(line, {
+                                opacity: 1,
+                                x: 0,
+                                clipPath: 'inset(0 0% 0 0)'
                             });
                         });
                     }
