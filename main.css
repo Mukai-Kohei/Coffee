@@ -519,7 +519,7 @@
             }
 
             .hero-navigation {
-                bottom: 30px;
+                bottom: 60px; /* Adjust for tablet and smaller */
             }
 
             .hero-nav-links {
@@ -605,7 +605,7 @@
 
             /* ナビゲーション */
             .hero-navigation {
-                bottom: 20px;
+                bottom: 50px; /* Adjust for smartphone */
             }
 
             .hero-nav-links {
@@ -904,6 +904,39 @@
             .product-arrow {
                 font-size: 1.2rem;
                 top: 1.2rem;
+            }
+        }
+
+        /* ========================================
+           Scroll Indicator
+        ======================================== */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            opacity: 0; /* Initially hidden */
+            mix-blend-mode: difference;
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-bottom: 1px solid white;
+            border-right: 1px solid white;
+            transform: rotate(45deg);
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) rotate(45deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(10px) rotate(45deg);
+                opacity: 0.5;
             }
         }
     

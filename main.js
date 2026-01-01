@@ -223,6 +223,12 @@ import roasterImage from './roaster.jpg';
                         ScrollTrigger.refresh();
                         // Lenisを初期化
                         initLenis();
+                        // スクロールインジケーターをフェードイン
+                        gsap.to(".scroll-indicator", {
+                            autoAlpha: 1,
+                            delay: 1.5,
+                            duration: 1.5
+                        });
                     }
                 });
 
@@ -240,15 +246,15 @@ import roasterImage from './roaster.jpg';
             
             // 2-1. 「陶器、」を表示（ローディング消失と食い気味に）
             masterTL.fromTo(heroTitleTop,
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1.8, ease: 'power2.out' },
+                { opacity: 0, scale: 0.95 },
+                { opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' },
                 '-=0.6' // 前のアニメーションより0.6秒早く開始
             );
 
             // 2-2. 「焙煎」を表示（少し遅延）
             masterTL.fromTo(heroTitleBottom,
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1.8, ease: 'power2.out' },
+                { opacity: 0, scale: 0.95 },
+                { opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' },
                 '-=1.3' // 陶器、が0.5秒表示された後に開始
             );
 
@@ -283,6 +289,18 @@ import roasterImage from './roaster.jpg';
 
         // DOMContentLoadedでScrollTriggerなどを設定
         document.addEventListener('DOMContentLoaded', () => {
+            // スクロールインジケーターをスクロールで非表示にする
+            ScrollTrigger.create({
+                trigger: "body",
+                start: "top top",
+                onScroll: self => {
+                    if (self.scroll() > 50) {
+                        gsap.to(".scroll-indicator", { autoAlpha: 0, duration: 0.5 });
+                        self.kill(); // 一度実行したらトリガーを無効化
+                    }
+                }
+            });
+
             // TOPから確実にスタート
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
