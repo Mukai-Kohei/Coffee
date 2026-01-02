@@ -187,6 +187,7 @@
             color: #ffffff;
             opacity: 0;
             filter: blur(10px);
+            will-change: transform, opacity, filter;
         }
 
         /* 右上タイトル「陶器、」 */
@@ -205,6 +206,7 @@
             mix-blend-mode: difference;
             opacity: 0;
             filter: blur(10px);
+            will-change: transform, opacity, filter;
         }
 
         /* 左下タイトル「焙煎」 */
@@ -223,6 +225,7 @@
             mix-blend-mode: difference;
             opacity: 0;
             filter: blur(10px);
+            will-change: transform, opacity, filter;
         }
 
         /* 中央サブコピー */
@@ -234,6 +237,7 @@
             text-align: center;
             opacity: 0;
             filter: blur(10px);
+            will-change: transform, opacity, filter;
             /* 初期位置はGSAPで設定（transform: translate(-50%, -50%)相当） */
         }
 
@@ -273,6 +277,7 @@
             display: block;
             text-decoration: none;
             cursor: pointer;
+            will-change: transform, opacity, filter;
         }
 
         /* YouTube サムネイル画像 */
@@ -329,6 +334,7 @@
             text-align: center;
             opacity: 0;
             filter: blur(10px);
+            will-change: transform, opacity, filter;
         }
 
         .hero-nav-links {

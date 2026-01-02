@@ -36,14 +36,14 @@ import roasterImage from './roaster.jpg';
         let hasInitialized = false;
         let hasVideoInitialized = false; // Guard flag for video initialization
 
-        // 動画を確実に初期化する関数（キャッシュ完全回避・リロード時も毎回実行）
+        // 動画を初期化する関数（キャッシュ可能なURLを使用）
         function initializeVideo() {
             if (hasVideoInitialized) {
                 console.log('🚫 Video already initialized. Skipping.');
                 return;
             }
             hasVideoInitialized = true;
-            console.log('🎬 Initializing video (fresh load)...');
+            console.log('🎬 Initializing video (using cacheable URL)...');
 
             const heroVideoIframe = document.getElementById('hero-video-iframe');
             if (!heroVideoIframe) {
@@ -52,15 +52,10 @@ import roasterImage from './roaster.jpg';
                 return;
             }
 
-            // キャッシュを完全に回避するために毎回ユニークなパラメータを追加
-            const timestamp = new Date().getTime();
-            const randomParam = Math.random().toString(36).substring(7);
-            const sessionParam = Math.floor(Math.random() * 1000000);
+            // キャッシュ可能な固定URL
+            const newSrc = `https://www.youtube.com/embed/EsEM4zzvE2k?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&disablekb=1&fs=0&iv_load_policy=3&version=3`;
 
-            // より多くのキャッシュバスター付きURL
-            const newSrc = `https://www.youtube.com/embed/EsEM4zzvE2k?autoplay=1&mute=1&loop=1&playlist=EsEM4zzvE2k&controls=0&start=4&playsinline=1&rel=0&modestbranding=1&enablejsapi=1&disablekb=1&fs=0&iv_load_policy=3&version=3&nocache=${timestamp}&rand=${randomParam}&session=${sessionParam}`;
-
-            console.log('🔄 Setting fresh video src');
+            console.log('🔄 Setting video src');
 
             // 既存のタイムアウトをクリア
             if (videoReadyTimeout) {
@@ -94,7 +89,7 @@ import roasterImage from './roaster.jpg';
                 isVideoReady = true;
             };
 
-            // srcを直接設定（これにより確実に再読み込みが発生）
+            // srcを直接設定
             heroVideoIframe.src = newSrc;
         }
 
@@ -143,7 +138,7 @@ import roasterImage from './roaster.jpg';
         }
 
         // ページ読み込み時に実行
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
             // 既に初期化済みの場合はスキップ（重複実行防止）
             if (hasInitialized) {
                 console.log('⚠️ Already initialized, skipping...');
@@ -152,6 +147,14 @@ import roasterImage from './roaster.jpg';
             hasInitialized = true;
 
             console.log('🚀 Page load event triggered');
+
+            // フォント読み込みを待機
+            try {
+                await document.fonts.ready;
+                console.log('✅ Fonts loaded.');
+            } catch (error) {
+                console.error('Font loading failed:', error);
+            }
 
             // アニメーション中はスクロールを禁止
             document.body.classList.add('no-scroll');
@@ -229,6 +232,8 @@ import roasterImage from './roaster.jpg';
                             delay: 1.5,
                             duration: 1.5
                         });
+                        // アニメーション完了後にwill-changeを削除して、継続的なGPU負荷を避ける
+                        gsap.set([heroBrand, heroTitleTop, heroTitleBottom, heroSubcopy, heroMovieBox, heroNavigation], { clearProps: 'will-change' });
                     }
                 });
 
@@ -242,48 +247,47 @@ import roasterImage from './roaster.jpg';
                     }
                 }, 0.5); // 0.5秒後に開始（動画準備完了済み）
 
-            // === Step 2: メインビジュアルのテキストを順番に表示 ===
-            
-            // 2-1. 「陶器、」を表示（ローディング消失と食い気味に）
-            masterTL.fromTo(heroTitleTop,
-                { opacity: 0, scale: 0.95 },
-                { opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' },
-                '-=0.6' // 前のアニメーションより0.6秒早く開始
-            );
+                // === Step 2: メインビジュアルのテキストを順番に表示 ===
 
-            // 2-2. 「焙煎」を表示（少し遅延）
-            masterTL.fromTo(heroTitleBottom,
-                { opacity: 0, scale: 0.95 },
-                { opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' },
-                '-=1.3' // 陶器、が0.5秒表示された後に開始
-            );
+                // 2-1. 「陶器、」を表示
+                masterTL.fromTo(heroTitleTop,
+                    { opacity: 0, scale: 0.95, filter: 'blur(10px)' },
+                    { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 2.2, ease: 'power2.out' },
+                    '-=0.6'
+                );
 
-            // 2-3. 「栃木県栃木市にて、陶器と炭火が紡ぐ珈琲。」を表示
-            // （xPercent/yPercentで中央配置し、y:30で少し下にずらす）
-            gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 30, opacity: 0 });
-            masterTL.to(heroSubcopy,
-                { y: 0, opacity: 1, duration: 1.8, ease: 'power2.out' },
-                '-=1.3' // 焙煎が0.5秒表示された後に開始
-            );
+                // 2-2. 「焙煎」を表示
+                masterTL.fromTo(heroTitleBottom,
+                    { opacity: 0, scale: 0.95, filter: 'blur(10px)' },
+                    { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 2.2, ease: 'power2.out' },
+                    '-=1.3'
+                );
 
-            // 2-4. その他全て（工藝 迎ふ、YouTube動画、ナビゲーション）を同時に表示
-            masterTL.fromTo(heroBrand,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
-                '-=1.2' // サブコピーが0.6秒表示された後に開始
-            );
+                // 2-3. 「栃木県栃木市にて、陶器と炭火が紡ぐ珈琲。」を表示
+                gsap.set(heroSubcopy, { xPercent: -50, yPercent: -50, y: 30, opacity: 0, filter: 'blur(10px)' });
+                masterTL.to(heroSubcopy,
+                    { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.8, ease: 'power2.out' },
+                    '-=1.3'
+                );
 
-            masterTL.fromTo(heroMovieBox,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
-                '<' // 前のアニメーションと同時に開始
-            );
+                // 2-4. その他全て（工藝 迎ふ、YouTube動画、ナビゲーション）を同時に表示
+                masterTL.fromTo(heroBrand,
+                    { opacity: 0, y: 20, filter: 'blur(10px)' },
+                    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, ease: 'power2.out' },
+                    '-=1.2'
+                );
 
-            masterTL.fromTo(heroNavigation,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' },
-                '<' // 前のアニメーションと同時に開始
-            );
+                masterTL.fromTo(heroMovieBox,
+                    { opacity: 0, y: 20, filter: 'blur(10px)' },
+                    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, ease: 'power2.out' },
+                    '<'
+                );
+
+                masterTL.fromTo(heroNavigation,
+                    { opacity: 0, y: 20, filter: 'blur(10px)' },
+                    { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, ease: 'power2.out' },
+                    '<'
+                );
             }
         });
 

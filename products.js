@@ -19,21 +19,21 @@ console.log('🚀🚀🚀 products.js LOADED 🚀🚀🚀');
         {
             title: '【エチオピア】モカ ゲイシャ G1 Natural 150g',
             link: 'https://mukai6666.thebase.in/items/124050080',
-            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/0cfd23a87bc0501286a77d7966609f8d.jpg?imformat=generic&q=90&im=Resize,width=300,type=normal',
+            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/0cfd23a87bc0501286a77d7966609f8d.jpg?imformat=generic&q=90&im=Resize,width=640,type=normal',
             price: '1,720円',
             category: 'ETHIOPIA'
         },
         {
             title: '【エチオピア】モカ チェルベサ G1 Natural 150g',
             link: 'https://mukai6666.thebase.in/items/114467561',
-            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/3d6f16d41ea4e83ec52461c4ee35d336.jpg?imformat=generic&q=90&im=Resize,width=300,type=normal',
+            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/3d6f16d41ea4e83ec52461c4ee35d336.jpg?imformat=generic&q=90&im=Resize,width=640,type=normal',
             price: '1,620円',
             category: 'ETHIOPIA'
         },
         {
             title: 'タンザニア AA トップ イエンガ -Speciality- 150g',
             link: 'https://mukai6666.thebase.in/items/105116833',
-            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/5c2a378346e48ff1ce2fac058a75f096.jpg?imformat=generic&q=90&im=Resize,width=300,type=normal',
+            thumbnail: 'https://baseec-img-mng.akamaized.net/images/item/origin/5c2a378346e48ff1ce2fac058a75f096.jpg?imformat=generic&q=90&im=Resize,width=640,type=normal',
             price: '1,600円',
             category: 'TANZANIA'
         }
